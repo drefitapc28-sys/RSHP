@@ -29,8 +29,5 @@
         </div>
     </form>
 
-    <p style="text-align:center; margin-top:15px;">
-        Belum punya akun? <a href="#" style="color:#1979ef; text-decoration:none;">Hubungi admin</a>
-    </p>
 </section>
 @endsection

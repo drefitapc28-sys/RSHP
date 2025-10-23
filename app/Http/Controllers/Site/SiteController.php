@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Site;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class SiteContoller extends Controller
+class SiteController extends Controller
 {
     public function index()
     {
@@ -27,8 +27,24 @@ class SiteContoller extends Controller
         return view('visi');
     }
 
+    public function kontak()
+    {
+        return view('kontak');
+    }
+
     public function login()
     {
         return view('auth.login');
     }
+
+    public function cekKoneksi()
+    {
+        try {
+            \DB::connection()->getPdo();
+            return "Koneksi database berhasil!";
+        } catch (\Exception $e) {
+            return "Gagal terkoneksi ke database: " . $e->getMessage();
+        }
+    }
 }
+
