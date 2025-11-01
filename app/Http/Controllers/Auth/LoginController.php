@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
+use App\Models\User;
+use App\Models\Role;
 
 class LoginController extends Controller
 {
@@ -17,43 +19,84 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $email = trim($request->email);
-        $password = $request->password;
-
-        $user = DB::table('user')->where('email', $email)->first();
-
-        if (!$user) {
-            return back()->with('error', 'Email tidak ditemukan!');
-        }
-
-        if (!Hash::check($password, $user->password)) {
-            return back()->with('error', 'Password salah!');
-        }
-
-        $role = DB::table('role_user')
-            ->join('role', 'role.idrole', '=', 'role_user.idrole')
-            ->where('role_user.iduser', $user->iduser)
-            ->select('role.idrole', 'role.nama_role')
-            ->first();
-
-        Session::put('user', [
-            'iduser' => $user->iduser,
-            'nama' => $user->nama,
-            'email' => $user->email,
-            'role_id' => $role->idrole ?? 0,
-            'role' => $role->nama_role ?? 'User',
+        // 🔹 1. Validasi input
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required|min:6',
         ]);
 
-        if (($role->idrole ?? 0) == 1) {
-            return redirect()->route('admin.dashboard');
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
         }
 
-        return redirect()->route('login')->with('error', 'Hanya Admin yang bisa mengakses sistem ini.');
+        // 🔹 2. Ambil user dengan relasi role aktif
+        $user = User::with(['roleUser' => function ($query) {
+            $query->where('status', 1);
+        }, 'roleUser.role'])
+            ->where('email', $request->input('email'))
+            ->first();
+
+        if (!$user) {
+            return redirect()->back()
+                ->withErrors(['email' => 'Email tidak ditemukan.'])
+                ->withInput();
+        }
+
+        // 🔹 3. Verifikasi password
+        if (!Hash::check($request->password, $user->password)) {
+            return redirect()->back()
+                ->withErrors(['password' => 'Password salah.'])
+                ->withInput();
+        }
+
+        // 🔹 4. Login user ke session
+        Auth::login($user);
+
+        // 🔹 5. Ambil data role user
+        $roleData = $user->roleUser[0] ?? null;
+        $roleId = $roleData->idrole ?? null;
+
+        // 🔹 6. Simpan informasi ke session
+        $request->session()->put([
+            'user_id' => $user->iduser,
+            'user_name' => $user->nama,
+            'user_email' => $user->email,
+            'user_role' => $roleId,
+            'user_status' => $roleData->status ?? 'inactive',
+        ]);
+
+        // 🔹 7. Redirect sesuai role
+        switch ($roleId) {
+            case 1:
+                return redirect()->route('admin.dashboard')
+                    ->with('success', 'Login berhasil sebagai Administrator!');
+            case 2:
+                return redirect()->route('dokter.dashboard')
+                    ->with('success', 'Login berhasil sebagai Dokter!');
+            case 3:
+                return redirect()->route('perawat.dashboard')
+                    ->with('success', 'Login berhasil sebagai Perawat!');
+            case 4:
+                return redirect()->route('resepsionis.dashboard')
+                    ->with('success', 'Login berhasil sebagai Resepsionis!');
+            case 5:
+                return redirect()->route('pemilik.dashboard')
+                    ->with('success', 'Login berhasil sebagai Pemilik!');
+            default:
+                Auth::logout();
+                return redirect()->route('login')
+                    ->withErrors(['role' => 'Role pengguna tidak dikenali.']);
+        }
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        Session::forget('user');
-        return redirect()->route('login')->with('success', 'Berhasil logout!');
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login')->with('success', 'Anda telah logout.');
     }
 }

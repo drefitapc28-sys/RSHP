@@ -3,17 +3,38 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Site\SiteController;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\JenisHewanController;
-use App\Http\Controllers\Admin\RasHewanController;
-use App\Http\Controllers\Admin\KategoriController;
-use App\Http\Controllers\Admin\KategoriKlinisController;
-use App\Http\Controllers\Admin\KodeTindakanTerapiController;
-use App\Http\Controllers\Admin\PetController;
-use App\Http\Controllers\Admin\PemilikController;
-use App\Http\Controllers\Admin\RoleController;
-use App\Http\Controllers\Admin\RoleUserController;
-use App\Http\Controllers\Admin\DataMasterController;
+
+// ===================== ADMIN CONTROLLERS =====================
+use App\Http\Controllers\Admin\{
+    DashboardController,
+    JenisHewanController,
+    RasHewanController,
+    KategoriController,
+    KategoriKlinisController,
+    KodeTindakanTerapiController,
+    PetController,
+    PemilikController,
+    RoleController,
+    RoleUserController
+};
+
+// ===================== ROLE DASHBOARD CONTROLLERS =====================
+use App\Http\Controllers\Dokter\DashboardDokterController;
+use App\Http\Controllers\Dokter\DokterRekamMedisController;
+
+use App\Http\Controllers\Perawat\DashboardPerawatController;
+use App\Http\Controllers\Perawat\RekamMedisController;
+
+
+use App\Http\Controllers\Resepsionis\DashboardResepsionisController;
+use App\Http\Controllers\Resepsionis\TemuDokterController;
+
+use App\Http\Controllers\Pemilik\DashboardPemilikController;
+use App\Http\Controllers\Pemilik\PemilikPetController;
+use App\Http\Controllers\Pemilik\PemilikReservasiController;
+use App\Http\Controllers\Pemilik\PemilikRekamMedisController;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -34,36 +55,152 @@ Route::get('/cek-koneksi', [SiteController::class, 'cekKoneksi'])->name('cek.kon
 */
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
-Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::get('/admin/data-master', [DataMasterController::class, 'index'])->name('admin.data-master');
 /*
 |--------------------------------------------------------------------------
-| ADMIN AREA (TANPA MIDDLEWARE)
+| ADMIN AREA (Data Master)
 |--------------------------------------------------------------------------
 */
-Route::prefix('admin')->name('admin.')->group(function () {
-
+Route::middleware(['auth', 'isAdministrator'])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Modul Data Master
-    Route::get('/jenis-hewan', [JenisHewanController::class, 'index'])->name('jenis-hewan');
-    Route::get('/ras-hewan', [RasHewanController::class, 'index'])->name('ras-hewan');
-    Route::get('/kategori', [KategoriController::class, 'index'])->name('kategori');
-    Route::get('/kategori-klinis', [KategoriKlinisController::class, 'index'])->name('kategori-klinis');
-    Route::get('/kode-tindakan-terapi', [KodeTindakanTerapiController::class, 'index'])->name('kode-tindakan-terapi');
-    Route::get('/pet', [PetController::class, 'index'])->name('pet');
-    Route::get('/pemilik', [PemilikController::class, 'index'])->name('pemilik');
-    Route::get('/role-user', [RoleUserController::class, 'index'])->name('role-user');
+    // ========== Data Master ==========
+    Route::controller(JenisHewanController::class)->group(function () {
+        Route::get('/jenis-hewan', 'index')->name('jenis-hewan.index');
+        Route::get('/jenis-hewan/create', 'create')->name('jenis-hewan.create');
+        Route::post('/jenis-hewan/store', 'store')->name('jenis-hewan.store');
+        Route::get('/jenis-hewan/edit/{id}', 'edit')->name('jenis-hewan.edit');
+        Route::post('/jenis-hewan/update/{id}', 'update')->name('jenis-hewan.update');
+        Route::delete('/jenis-hewan/delete/{id}', 'destroy')->name('jenis-hewan.delete');
+    });
 
-    // CRUD Role Lengkap
-    Route::resource('role', RoleController::class)->names([
-        'index'   => 'role.index',
-        'create'  => 'role.create',
-        'store'   => 'role.store',
-        'edit'    => 'role.edit',
-        'update'  => 'role.update',
-        'destroy' => 'role.destroy',
-    ]);
+    Route::controller(RasHewanController::class)->group(function () {
+        Route::get('/ras-hewan', 'index')->name('ras-hewan.index');
+        Route::get('/ras-hewan/create', 'create')->name('ras-hewan.create');
+        Route::post('/ras-hewan/store', 'store')->name('ras-hewan.store');
+        Route::get('/ras-hewan/edit/{id}', 'edit')->name('ras-hewan.edit');
+        Route::post('/ras-hewan/update/{id}', 'update')->name('ras-hewan.update');
+        Route::delete('/ras-hewan/delete/{id}', 'destroy')->name('ras-hewan.delete');
+    });
+
+    Route::controller(KategoriController::class)->group(function () {
+        Route::get('/kategori', 'index')->name('kategori.index');
+        Route::get('/kategori/create', 'create')->name('kategori.create');
+        Route::post('/kategori/store', 'store')->name('kategori.store');
+        Route::get('/kategori/edit/{id}', 'edit')->name('kategori.edit');
+        Route::post('/kategori/update/{id}', 'update')->name('kategori.update');
+        Route::delete('/kategori/delete/{id}', 'destroy')->name('kategori.delete');
+    });
+
+    Route::controller(KategoriKlinisController::class)->group(function () {
+        Route::get('/kategori-klinis', 'index')->name('kategori-klinis.index');
+        Route::get('/kategori-klinis/create', 'create')->name('kategori-klinis.create');
+        Route::post('/kategori-klinis/store', 'store')->name('kategori-klinis.store');
+        Route::get('/kategori-klinis/edit/{id}', 'edit')->name('kategori-klinis.edit');
+        Route::post('/kategori-klinis/update/{id}', 'update')->name('kategori-klinis.update');
+        Route::delete('/kategori-klinis/delete/{id}', 'destroy')->name('kategori-klinis.delete');
+    });
+
+    Route::controller(KodeTindakanTerapiController::class)->group(function () {
+        Route::get('/kode-tindakan-terapi', 'index')->name('kode-tindakan-terapi.index');
+        Route::get('/kode-tindakan-terapi/create', 'create')->name('kode-tindakan-terapi.create');
+        Route::post('/kode-tindakan-terapi/store', 'store')->name('kode-tindakan-terapi.store');
+        Route::get('/kode-tindakan-terapi/edit/{id}', 'edit')->name('kode-tindakan-terapi.edit');
+        Route::post('/kode-tindakan-terapi/update/{id}', 'update')->name('kode-tindakan-terapi.update');
+        Route::delete('/kode-tindakan-terapi/delete/{id}', 'destroy')->name('kode-tindakan-terapi.delete');
+    });
+
+    Route::controller(PetController::class)->group(function () {
+        Route::get('/pet', 'index')->name('pet.index');
+        Route::get('/pet/create', 'create')->name('pet.create');
+        Route::post('/pet/store', 'store')->name('pet.store');
+        Route::get('/pet/edit/{id}', 'edit')->name('pet.edit');
+        Route::post('/pet/update/{id}', 'update')->name('pet.update');
+        Route::delete('/pet/delete/{id}', 'destroy')->name('pet.delete');
+    });
+
+    Route::controller(PemilikController::class)->group(function () {
+        Route::get('/pemilik', 'index')->name('pemilik.index');
+        Route::get('/pemilik/create', 'create')->name('pemilik.create');
+        Route::post('/pemilik/store', 'store')->name('pemilik.store');
+        Route::get('/pemilik/edit/{id}', 'edit')->name('pemilik.edit');
+        Route::post('/pemilik/update/{id}', 'update')->name('pemilik.update');
+        Route::delete('/pemilik/delete/{id}', 'destroy')->name('pemilik.delete');
+    });
+
+    Route::controller(RoleController::class)->group(function () {
+        Route::get('/role', 'index')->name('role.index');
+        Route::get('/role/create', 'create')->name('role.create');
+        Route::post('/role/store', 'store')->name('role.store');
+        Route::get('/role/edit/{id}', 'edit')->name('role.edit');
+        Route::post('/role/update/{id}', 'update')->name('role.update');
+        Route::delete('/role/delete/{id}', 'destroy')->name('role.delete');
+    });
+
+    Route::controller(RoleUserController::class)->group(function () {
+        Route::get('/role-user', 'index')->name('role-user.index');
+        Route::get('/role-user/create', 'create')->name('role-user.create');
+        Route::post('/role-user/store', 'store')->name('role-user.store');
+        Route::get('/role-user/edit/{id}', 'edit')->name('role-user.edit');
+        Route::post('/role-user/update/{id}', 'update')->name('role-user.update');
+        Route::delete('/role-user/delete/{id}', 'destroy')->name('role-user.delete');
+    });
+});
+
+/*
+|--------------------------------------------------------------------------
+| DOKTER AREA
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'isDokter'])->group(function () {
+    Route::get('/dokter/dashboard', [DashboardDokterController::class, 'index'])->name('dokter.dashboard');
+    Route::get('/dokter/rekam', [DokterRekamMedisController::class, 'index'])->name('dokter.rekam.index');
+    Route::get('dokter/rekam/{id}', [DokterRekamMedisController::class, 'show'])->name('dokter.rekam.show');
+    Route::post('dokter/rekam/{id}/add-terapi', [DokterRekamMedisController::class, 'addTerapi'])->name('dokter.rekam.addTerapi');
+    Route::post('dokter/rekam-medis/{id}/tindakan', [DokterRekamMedisController::class, 'storeTindakan'])->name('dokter.rekam.tindakan.store');
+    Route::get('/dokter/pemilik', [PemilikController::class, 'index'])->name('dokter.pemilik');
+    Route::get('/dokter/pet', [PetController::class, 'index'])->name('dokter.pet');
+});
+
+/*
+|--------------------------------------------------------------------------
+| PERAWAT AREA
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'isPerawat'])->group(function () {
+    Route::get('/perawat/dashboard', [DashboardPerawatController::class, 'index'])->name('perawat.dashboard');
+    Route::get('/perawat/pemilik', [PemilikController::class, 'index'])->name('perawat.pemilik');
+    Route::get('/perawat/pet', [PetController::class, 'index'])->name('perawat.pet');
+    Route::get('/perawat/rekam-medis', [RekamMedisController::class,'index'])->name('perawat.rekam-medis.index');
+    Route::get('/perawat/rekam-medis/create', [RekamMedisController::class,'create'])->name('perawat.rekam-medis.create');
+    Route::get('/perawat/rekam-medis/{id}', [RekamMedisController::class,'show'])->name('perawat.rekam-medis.show');
+    Route::post('/perawat/rekam-medis/store', [RekamMedisController::class,'store'])->name('perawat.rekam-medis.store');
+});
+
+/*
+|--------------------------------------------------------------------------
+| RESEPSIONIS AREA
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'isResepsionis'])->group(function () {
+    Route::get('/resepsionis/dashboard', [DashboardResepsionisController::class, 'index'])->name('resepsionis.dashboard');
+    Route::get('/resepsionis/pemilik', [PemilikController::class, 'index'])->name('resepsionis.pemilik');
+    Route::get('/resepsionis/pet', [PetController::class, 'index'])->name('resepsionis.pet');
+    Route::get('/resepsionis/temu-dokter', [TemuDokterController::class, 'index'])->name('resepsionis.temu-dokter');
+    Route::post('/resepsionis/temu-dokter', [TemuDokterController::class, 'store'])->name('resepsionis.temu-dokter.store');
+});
+
+/*
+|--------------------------------------------------------------------------
+| PEMILIK AREA
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'isPemilik'])->group(function () {
+    Route::get('/pemilik/dashboard', [DashboardPemilikController::class, 'index'])->name('pemilik.dashboard');
+    Route::get('/pemilik/pet', [PemilikPetController::class, 'index'])->name('pemilik.pet.index');
+    Route::get('/pemilik/reservasi', [PemilikReservasiController::class, 'index'])->name('pemilik.reservasi.index');
+    Route::get('/pemilik/rekam-medis', [PemilikRekamMedisController::class, 'index'])->name('pemilik.rekam.index');
+    Route::get('/pemilik/rekam-medis/{id}', [PemilikRekamMedisController::class, 'show'])->name('pemilik.rekam.show');
 });

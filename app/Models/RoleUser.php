@@ -18,11 +18,11 @@ class RoleUser extends Model
 
     public function role()
     {
-        return $this->belongsTo(Role::class, 'idrole');
+        return $this->belongsTo(Role::class, 'idrole', 'idrole');
     }
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'iduser');
+        return $this->belongsTo(User::class, 'iduser', 'iduser');
     }
 }

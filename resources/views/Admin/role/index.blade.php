@@ -1,4 +1,4 @@
-@extends('layout.main')
+@extends('layout.Dashboard')
 
 @section('title', 'Role Pengguna | RSHP Unair')
 
@@ -43,7 +43,7 @@
                         <td>
                             <div class="btn-group" role="group">
                                 <a href="{{ route('admin.role.edit', $row->idrole) }}" class="btn btn-sm btn-primary">✏️ Edit</a>
-                                <form action="{{ route('admin.role.destroy', $row->idrole) }}" method="POST" style="display:inline-block;">
+                                <form action="{{ route('admin.role.delete', $row->idrole) }}" method="GET"
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger"

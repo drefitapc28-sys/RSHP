@@ -1,19 +1,28 @@
-@extends('layout.main')
+@extends('layout.Dashboard')
 
 @section('title', 'Kategori Tindakan | RSHP Unair')
 
 @section('content')
-<div class="container-fluid mt-4"> {{-- full width --}}
+<div class="container-fluid mt-4">
   <div class="card shadow-lg border-0 rounded-4 p-4">
     <h2 class="text-center mb-3 text-gradient fw-bold">💉 Kategori Tindakan</h2>
     <p class="text-center text-muted">
         Berikut adalah daftar <strong>kategori tindakan</strong> yang digunakan di RSHP Universitas Airlangga.
     </p>
 
+    {{-- Tombol Tambah --}}
     <div class="d-flex justify-content-end mb-3">
-        <a href="#" class="btn btn-success px-4">+ Tambah Kategori</a>
+        <a href="{{ route('admin.kategori.create') }}" class="btn btn-success px-4">+ Tambah Kategori</a>
     </div>
 
+    {{-- Pesan sukses --}}
+    @if (session('success'))
+      <div class="alert alert-success text-center fw-semibold">
+        {{ session('success') }}
+      </div>
+    @endif
+
+    {{-- Tabel data --}}
     <div class="table-responsive">
       <table class="table table-hover table-bordered align-middle text-center shadow-sm rshp-table w-100">
         <thead style="background-color: #fde68a; border: 2px solid #e0b100;">
@@ -30,8 +39,9 @@
             <td>{{ $row->nama_kategori }}</td>
             <td>
               <div class="btn-group" role="group">
-                <a href="#" class="btn btn-sm btn-primary">✏️ Edit</a>
-                <a href="#" class="btn btn-sm btn-danger"
+                <a href="{{ route('admin.kategori.edit', $row->idkategori) }}" class="btn btn-sm btn-primary">✏️ Edit</a>
+                <a href="{{ route('admin.kategori.delete', $row->idkategori) }}" 
+                   class="btn btn-sm btn-danger"
                    onclick="return confirm('Yakin ingin menghapus data ini?')">🗑️ Hapus</a>
               </div>
             </td>
@@ -45,7 +55,7 @@
   </div>
 </div>
 
-{{-- CSS khusus untuk konsistensi RSHP --}}
+{{-- CSS khusus untuk tabel RSHP --}}
 <style>
     .rshp-table {
         width: 100%;
@@ -65,7 +75,6 @@
         transition: 0.2s;
     }
 
-    /* Biar card-nya mepet full tapi tetap rapi */
     .card {
         margin: 0 20px;
     }

@@ -75,15 +75,15 @@
         <div class="mt-4 text-center">
             <h5 class="fw-semibold mb-3 text-secondary">⚙️ Akses Cepat ke Data Master</h5>
             <div class="d-flex flex-wrap justify-content-center gap-3">
-                <a href="{{ route('admin.role-user') }}" class="btn btn-outline-dark">👥 Data User</a>
+                <a href="{{ route('admin.role-user.index') }}" class="btn btn-outline-dark">👥 Data User</a>
                 <a href="{{ route('admin.role.index') }}" class="btn btn-outline-warning">🧩 Manajemen Role</a>
-                <a href="{{ route('admin.jenis-hewan') }}" class="btn btn-outline-success">🐾 Jenis Hewan</a>
-                <a href="{{ route('admin.ras-hewan') }}" class="btn btn-outline-info">🐕 Ras Hewan</a>
-                <a href="{{ route('admin.pemilik') }}" class="btn btn-outline-primary">👩 Pemilik</a>
-                <a href="{{ route('admin.pet') }}" class="btn btn-outline-success">🐶 Data Pet</a>
-                <a href="{{ route('admin.kategori') }}" class="btn btn-outline-danger">📘 Kategori</a>
-                <a href="{{ route('admin.kategori-klinis') }}" class="btn btn-outline-pink">🧬 Kategori Klinis</a>
-                <a href="{{ route('admin.kode-tindakan-terapi') }}" class="btn btn-outline-warning">💊 Kode Tindakan Terapi</a>
+                <a href="{{ route('admin.jenis-hewan.index') }}" class="btn btn-outline-success">🐾 Jenis Hewan</a>
+                <a href="{{ route('admin.ras-hewan.index') }}" class="btn btn-outline-info">🐕 Ras Hewan</a>
+                <a href="{{ route('admin.pemilik.index') }}" class="btn btn-outline-primary">👩 Pemilik</a>
+                <a href="{{ route('admin.pet.index') }}" class="btn btn-outline-success">🐶 Data Pet</a>
+                <a href="{{ route('admin.kategori.index') }}" class="btn btn-outline-danger">📘 Kategori</a>
+                <a href="{{ route('admin.kategori-klinis.index') }}" class="btn btn-outline-pink">🧬 Kategori Klinis</a>
+                <a href="{{ route('admin.kode-tindakan-terapi.index') }}" class="btn btn-outline-warning">💊 Kode Tindakan Terapi</a>
             </div>
         </div>
     </div>
