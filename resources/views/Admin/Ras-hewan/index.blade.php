@@ -12,7 +12,7 @@
         </p>
 
         <div class="d-flex justify-content-end mb-3">
-            <a href="#" class="btn btn-success px-4">
+            <a href="{{ route('admin.ras-hewan.create') }}" class="btn btn-success px-4">
                 + Tambah Ras Hewan
             </a>
         </div>
@@ -35,9 +35,12 @@
                         <td>{{ $row->nama_jenis_hewan }}</td>
                         <td>
                             <div class="btn-group" role="group">
-                                <a href="#" class="btn btn-sm btn-primary">✏️ Edit</a>
-                                <a href="#" class="btn btn-sm btn-danger"
-                                   onclick="return confirm('Yakin ingin menghapus data ini?')">🗑️ Hapus</a>
+                                <a href="{{ route('admin.ras-hewan.edit', $row->idras_hewan) }}" class="btn btn-sm btn-primary">✏️ Edit</a>
+                                <form action="{{ route('admin.ras-hewan.delete', $row->idras_hewan) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger">🗑️ Hapus</button>
+                                </form>
                             </div>
                         </td>
                     </tr>

@@ -61,4 +61,6 @@ class DokterRekamMedisController extends Controller
         return redirect()->back()->with('success', 'Tindakan / terapi berhasil ditambahkan!');
     }
 
+    
+
 }

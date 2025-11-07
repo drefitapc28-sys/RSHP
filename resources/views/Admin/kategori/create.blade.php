@@ -1,4 +1,4 @@
-@extends('layout.main')
+@extends('layout.Dashboard')
 
 @section('title', 'Tambah Kategori | RSHP UNAIR')
 
@@ -10,9 +10,16 @@
 
       <form action="{{ route('admin.kategori.store') }}" method="POST">
         @csrf
-        <div class="mb-3">
+         <div class="mb-3">
           <label for="nama_kategori" class="form-label">Nama Kategori</label>
-          <input type="text" name="nama_kategori" id="nama_kategori" class="form-control" placeholder="Masukkan nama kategori..." required>
+          <input type="text" name="nama_kategori" id="nama_kategori"
+                 class="form-control @error('nama_kategori') is-invalid @enderror"
+                 value="{{ old('nama_kategori') }}"
+                 placeholder="Masukkan nama kategori...">
+
+          @error('nama_kategori')
+              <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
         </div>
 
         <div class="text-end">

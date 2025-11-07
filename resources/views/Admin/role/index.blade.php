@@ -38,25 +38,27 @@
                 <tbody>
                     @forelse ($data as $index => $row)
                     <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $row->nama_role }}</td>
-                        <td>
-                            <div class="btn-group" role="group">
-                                <a href="{{ route('admin.role.edit', $row->idrole) }}" class="btn btn-sm btn-primary">✏️ Edit</a>
-                                <form action="{{ route('admin.role.delete', $row->idrole) }}" method="GET"
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger"
-                                            onclick="return confirm('Yakin ingin menghapus data ini?')">🗑️ Hapus</button>
-                                </form>
-                            </div>
-                        </td>
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $row->nama_role }}</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                        <a href="{{ route('admin.role.edit', $row->idrole) }}" class="btn btn-sm btn-primary">✏️ Edit</a>
+
+                        <form action="{{ route('admin.role.delete', $row->idrole) }}" method="POST" style="display:inline-block;"
+                                onsubmit="return confirm('Yakin ingin menghapus role ini?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                        </form>
+                        </div>
+                    </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="3" class="text-muted fst-italic">Tidak ada data ditemukan.</td>
+                    <td colspan="3" class="text-muted fst-italic">Tidak ada data ditemukan.</td>
                     </tr>
                     @endforelse
+
                 </tbody>
             </table>
         </div>

@@ -72,8 +72,8 @@ ul.menu li a:hover{
 
     <ul class="menu">
         <li><a href="{{ route('dokter.rekam.index') }}">Rekam Medis</a></li>
-        <li><a href="{{ route('dokter.pemilik') }}">Data Pemilik</a></li>
-        <li><a href="{{ route('dokter.pet') }}">Data Hewan</a></li>
+        <li><a href="{{ route('dokter.pemilik.index') }}">Data Pemilik</a></li>
+        <li><a href="{{ route('dokter.pet.index') }}">Data Hewan</a></li>
     </ul>
 </section>
 </div>

@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class RoleUserController extends Controller
 {
-    // 🔹 INDEX
+    // ========= INDEX =======
     public function index()
     {
         $data = DB::table('role_user')
@@ -20,58 +20,155 @@ class RoleUserController extends Controller
                 'user.email as user_email',
                 'role.nama_role'
             )
+            ->orderBy('idrole_user', 'ASC')
             ->get();
 
         return view('Admin.Role-user.index', compact('data'));
     }
 
-    // 🔹 CREATE
+    // ========= CREATE =======
     public function create()
     {
-        $users = DB::table('user')->get();
         $roles = DB::table('role')->get();
-        return view('Admin.Role-user.create', compact('users', 'roles'));
+        return view('Admin.Role-user.create', compact('roles'));
     }
 
-    // 🔹 STORE
+    // ======== STORE =======
     public function store(Request $request)
     {
-        DB::table('role_user')->insert([
-            'iduser' => $request->iduser,
-            'idrole' => $request->idrole,
-            'status' => $request->status,
-        ]);
+        $this->validateNewUserRole($request);
 
-        return redirect()->route('admin.role-user.index')->with('success', 'Relasi role-user berhasil ditambahkan.');
+        $userId = $this->createUser($request);
+
+        $this->createRoleUser($request, $userId);
+
+        return redirect()->route('admin.role-user.index')
+            ->with('success', 'User baru berhasil dibuat dan role berhasil ditambahkan!');
     }
 
-    // 🔹 EDIT
+    // ======== EDIT =======
     public function edit($id)
     {
-        $data = DB::table('role_user')->where('idrole_user', $id)->first();
-        $users = DB::table('user')->get();
+        $data = DB::table('role_user')
+            ->join('user', 'role_user.iduser', '=', 'user.iduser')
+            ->where('idrole_user', $id)
+            ->select('role_user.*', 'user.nama as user_nama', 'user.email as user_email')
+            ->first();
+
         $roles = DB::table('role')->get();
 
-        return view('Admin.Role-user.edit', compact('data', 'users', 'roles'));
+        if (!$data) {
+            return redirect()->route('admin.role-user.index')->with('error', 'Data tidak ditemukan.');
+        }
+
+        return view('Admin.Role-user.edit', compact('data', 'roles'));
     }
 
-    // 🔹 UPDATE
+    // ======== UPDATE =======
     public function update(Request $request, $id)
     {
-        DB::table('role_user')->where('idrole_user', $id)->update([
-            'iduser' => $request->iduser,
-            'idrole' => $request->idrole,
-            'status' => $request->status,
-        ]);
+        // Validasi gabungan: user + role
+        $this->validateEditUserRole($request, $id);
 
-        return redirect()->route('admin.role-user.index')->with('success', 'Relasi role-user berhasil diperbarui.');
+        // Update user & relasi role-user
+        $this->updateUserAndRole($request, $id);
+
+        return redirect()->route('admin.role-user.index')
+            ->with('success', 'Data user dan role berhasil diperbarui!');
     }
 
-    // 🔹 DELETE
-    public function delete($id)
+    // ======== DESTROY =======
+    public function destroy($id)
     {
         DB::table('role_user')->where('idrole_user', $id)->delete();
+        return redirect()->route('admin.role-user.index')
+            ->with('success', 'Relasi role-user berhasil dihapus.');
+    }
 
-        return redirect()->route('admin.role-user.index')->with('success', 'Relasi role-user berhasil dihapus.');
+    // ========= PRIVATE METHODS =======
+
+    // Validasi tambah user + role
+    private function validateNewUserRole(Request $request)
+    {
+        $rules = [
+            'nama' => 'required|string|min:3|max:100',
+            'email' => 'required|email|unique:user,email',
+            'password' => 'required|min:6|confirmed',
+            'idrole' => 'required|exists:role,idrole',
+            'status' => 'required|in:aktif,nonaktif',
+        ];
+
+        $messages = [
+            'password.confirmed' => 'Konfirmasi password tidak sesuai.',
+            'status.in' => 'Status hanya boleh aktif atau nonaktif.',
+        ];
+
+        $request->validate($rules, $messages);
+    }
+
+    // Validasi edit user + role
+    private function validateEditUserRole(Request $request, $id)
+    {
+        $roleUser = DB::table('role_user')->where('idrole_user', $id)->first();
+
+        $rules = [
+            'nama' => 'required|string|min:3|max:100',
+            'email' => 'required|email|unique:user,email,' . ($roleUser->iduser ?? 'NULL') . ',iduser',
+            'password' => 'nullable|min:6',
+            'idrole' => 'required|exists:role,idrole',
+            'status' => 'required|in:aktif,nonaktif',
+        ];
+
+        $request->validate($rules);
+    }
+
+    // Simpan user baru
+    private function createUser(Request $request)
+    {
+        return DB::table('user')->insertGetId([
+            'nama' => ucwords(strtolower(trim($request->nama))),
+            'email' => strtolower(trim($request->email)),
+            'password' => bcrypt($request->password),
+        ]);
+    }
+
+    // Simpan relasi role-user baru
+    private function createRoleUser(Request $request, $userId)
+    {
+        $status = $request->status === 'aktif' ? 1 : 0;
+
+        DB::table('role_user')->insert([
+            'iduser' => $userId,
+            'idrole' => $request->idrole,
+            'status' => $status,
+        ]);
+    }
+
+    // Update data user & relasi role-user
+    private function updateUserAndRole(Request $request, $id)
+    {
+        $status = $request->status === 'aktif' ? 1 : 0;
+
+        $roleUser = DB::table('role_user')->where('idrole_user', $id)->first();
+
+        if ($roleUser) {
+            // Update user
+            $updateUser = [
+                'nama' => ucwords(strtolower(trim($request->nama))),
+                'email' => strtolower(trim($request->email)),
+            ];
+
+            if (!empty($request->password)) {
+                $updateUser['password'] = bcrypt($request->password);
+            }
+
+            DB::table('user')->where('iduser', $roleUser->iduser)->update($updateUser);
+
+            // Update relasi role
+            DB::table('role_user')->where('idrole_user', $id)->update([
+                'idrole' => $request->idrole,
+                'status' => $status,
+            ]);
+        }
     }
 }

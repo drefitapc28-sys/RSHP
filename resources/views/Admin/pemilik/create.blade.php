@@ -1,4 +1,4 @@
-@extends('layout.main')
+@extends('layout.Dashboard')
 
 @section('title', 'Tambah Pemilik Hewan | RSHP UNAIR')
 
@@ -13,15 +13,20 @@
     <form action="{{ route('admin.pemilik.store') }}" method="POST" class="mx-auto border p-4 rounded-4" style="max-width:500px; background-color:white;">
       @csrf
 
-      {{-- Nomor WA --}}
+      {{-- Nomor WhatsApp --}}
       <div class="mb-3">
         <label class="form-label fw-semibold">Nomor WhatsApp</label>
         <input 
           type="text" 
           name="no_wa" 
-          class="form-control" 
+          class="form-control @error('no_wa') is-invalid @enderror" 
+          value="{{ old('no_wa') }}" 
           placeholder="Masukkan nomor WhatsApp aktif..." 
           required>
+
+        @error('no_wa')
+          <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
       </div>
 
       {{-- Alamat --}}
@@ -29,21 +34,34 @@
         <label class="form-label fw-semibold">Alamat</label>
         <textarea 
           name="alamat" 
-          class="form-control" 
+          class="form-control @error('alamat') is-invalid @enderror" 
           rows="3" 
           placeholder="Masukkan alamat lengkap pemilik..." 
-          required></textarea>
+          required>{{ old('alamat') }}</textarea>
+
+        @error('alamat')
+          <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
       </div>
 
       {{-- User Pemilik --}}
       <div class="mb-3">
         <label class="form-label fw-semibold">User Pemilik</label>
-        <select name="iduser" class="form-select" required>
+        <select 
+          name="iduser" 
+          class="form-select @error('iduser') is-invalid @enderror" 
+          required>
           <option value="">-- Pilih User --</option>
           @foreach($users as $u)
-            <option value="{{ $u->iduser }}">{{ $u->nama }}</option>
+            <option value="{{ $u->iduser }}" {{ old('iduser') == $u->iduser ? 'selected' : '' }}>
+              {{ $u->nama }}
+            </option>
           @endforeach
         </select>
+
+        @error('iduser')
+          <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
       </div>
 
       {{-- Tombol --}}

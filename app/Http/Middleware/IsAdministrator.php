@@ -26,7 +26,7 @@ class IsAdministrator
         if (in_array(1, $roles)) {
             return $next($request);
         }
-
+  
         return back()->with('error', 'Akses ditolak. Anda tidak memiliki izin untuk mengakses halaman ini.');
     }
 }

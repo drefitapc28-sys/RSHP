@@ -1,4 +1,4 @@
-@extends('layout.main')
+@extends('layout.Dashboard')
 
 @section('title', 'Edit Jenis Hewan | RSHP Universitas Airlangga')
 

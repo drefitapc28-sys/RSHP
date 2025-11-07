@@ -1,4 +1,4 @@
-@extends('layout.main')
+@extends('layout.Dashboard')
 
 @section('title', 'Tambah Kategori Klinis | RSHP UNAIR')
 
@@ -12,7 +12,14 @@
         @csrf
         <div class="mb-3">
           <label for="nama_kategori_klinis" class="form-label fw-semibold">Nama Kategori Klinis</label>
-          <input type="text" name="nama_kategori_klinis" id="nama_kategori_klinis" class="form-control" placeholder="Masukkan nama kategori klinis..." required>
+          <input type="text" name="nama_kategori" id="nama_kategori_klinis"
+                 class="form-control @error('nama_kategori') is-invalid @enderror"
+                 value="{{ old('nama_kategori') }}"
+                 placeholder="Masukkan nama kategori klinis...">
+
+          @error('nama_kategori')
+              <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
         </div>
 
         <div class="text-end">

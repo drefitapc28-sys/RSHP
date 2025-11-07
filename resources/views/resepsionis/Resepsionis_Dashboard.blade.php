@@ -91,8 +91,8 @@
 
         {{-- Menu Navigasi --}}
         <ul class="menu">
-            <li><a href="{{ route('resepsionis.pemilik') }}"><class="btn btn-warning"> Data Pemilik</a></li>
-            <li><a href="{{ route('resepsionis.pet') }}"> <class="btn btn-info"> Data Hewan</a></li>
+            <li><a href="{{ route('resepsionis.pemilik.index') }}"><class="btn btn-warning"> Data Pemilik</a></li>
+            <li><a href="{{ route('resepsionis.pet.index') }}"> <class="btn btn-info"> Data Hewan</a></li>
             <li><a href="{{ route('resepsionis.temu-dokter') }}" class="btn btn-primary">Daftar Temu Dokter</a></li>
         </ul>
     </section>

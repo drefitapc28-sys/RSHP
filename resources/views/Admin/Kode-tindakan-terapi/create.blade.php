@@ -1,4 +1,4 @@
-@extends('layout.main')
+@extends('layout.Dashboard')
 
 @section('title', 'Tambah Kode Tindakan | RSHP UNAIR')
 
@@ -11,15 +11,20 @@
       <form action="{{ route('admin.kode-tindakan-terapi.store') }}" method="POST">
         @csrf
 
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Kode</label>
-          <input type="text" name="kode" class="form-control" placeholder="Masukkan kode tindakan..." required>
-        </div>
+        <input type="hidden" name="kode">
 
         <div class="mb-3">
           <label class="form-label fw-semibold">Deskripsi Tindakan</label>
-          <textarea name="deskripsi_tindakan_terapi" class="form-control" rows="3" placeholder="Masukkan deskripsi tindakan..." required></textarea>
+          <input type="text" name="deskripsi_tindakan_terapi" class="form-control @error('deskripsi_tindakan_terapi') is-invalid @enderror"
+                 value="{{ old('deskripsi_tindakan_terapi') }}"
+                 placeholder="Masukkan deskripsi tindakan...">
+
+        @error ('deskripsi_tindakan_terapi')
+            <div class="alert alert-danger">{{ $message }}</div>
+        @enderror
         </div>
+
+
 
         <div class="mb-3">
           <label class="form-label fw-semibold">Kategori</label>

@@ -1,4 +1,4 @@
-@extends('layout.main')
+@extends('layout.Dashboard')
 
 @section('title', 'Edit Role | RSHP Unair')
 
@@ -9,7 +9,6 @@
 
         <form action="{{ route('admin.role.update', $role->idrole) }}" method="POST">
             @csrf
-            @method('PUT')
             <div class="mb-3">
                 <label for="nama_role" class="form-label fw-semibold">Nama Role</label>
                 <input type="text" class="form-control" id="nama_role" name="nama_role"
