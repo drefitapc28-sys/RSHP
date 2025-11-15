@@ -1,9 +1,9 @@
-@extends('layout.Dashboard')
+@extends('layouts.lte.main')
 
 @section('title', 'Tambah Hewan Peliharaan | RSHP UNAIR')
 
 @section('content')
-<section class="py-5" style="background-color:#fffaf5;">
+<section class="py-5" style="background-color:#fffff;">
   <div class="container" style="max-width:700px;">
     <div class="card shadow p-4 rounded-4 border-0">
       <h3 class="fw-bold text-center mb-4 text-primary">Tambah Hewan Peliharaan 🐾</h3>
@@ -73,9 +73,7 @@
                   required>
             <option value="">-- Pilih Pemilik --</option>
             @foreach($pemilik as $p)
-              <option value="{{ $p->idpemilik }}" {{ old('idpemilik') == $p->idpemilik ? 'selected' : '' }}>
-                {{ $p->nama }}
-              </option>
+              <option value="{{ $p->idpemilik }}">{{ $p->nama_user }}</option>
             @endforeach
           </select>
           @error('idpemilik')

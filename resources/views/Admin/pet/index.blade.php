@@ -1,94 +1,96 @@
-@extends('layout.Dashboard')
+@extends('layouts.lte.main')
 
-@section('title', 'Data Hewan Peliharaan | RSHP UNAIR')
+@section('title', 'Data Hewan Peliharaan | RSHP Unair')
 
 @section('content')
-<section class="py-5" style="background-color:#fffaf5;">
-  <div class="container-fluid">
-    <h2 class="text-center mb-3 text-primary fw-bold">🐶 Data Hewan Peliharaan</h2>
-    <p class="text-center text-muted">
-      Berikut adalah daftar hewan peliharaan yang terdaftar di 
-      <strong>Rumah Sakit Hewan Pendidikan Universitas Airlangga</strong>.
-    </p>
+<div class="app-content">
+    <div class="container-fluid">
 
-    {{-- Tombol Tambah --}}
-    <div class="d-flex justify-content-end mb-3">
-      <a href="{{ route('admin.pet.create') }}" class="btn btn-success px-4">+ Tambah Hewan</a>
+        {{-- Breadcrumb --}}
+        <div class="row mb-3">
+            <div class="col-sm-6">
+                <h3 class="mb-0">Data Hewan Peliharaan</h3>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="#">Master Data</a></li>
+                    <li class="breadcrumb-item active">Hewan Peliharaan</li>
+                </ol>
+            </div>
+        </div>
+
+        {{-- Card Table --}}
+        <div class="row">
+            <div class="col-12">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Tabel Data Hewan Peliharaan</h3>
+                        <div class="card-tools">
+                            <a href="{{ route('admin.pet.create') }}" 
+                               class="btn btn-primary btn-sm">
+                                + Tambah Hewan
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px">No</th>
+                                    <th>Nama Hewan</th>
+                                    <th>Ras</th>
+                                    <th>Pemilik</th>
+                                    <th>Jenis Kelamin</th>
+                                    <th style="width: 150px">Aksi</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach ($pets as $index => $pet)
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $pet->nama }}</td>
+                                    <td>{{ $pet->nama_ras ?? '-' }}</td>
+                                    <td>{{ $pet->nama_pemilik ?? '-' }}</td>
+                                    <td>
+                                        @if ($pet->jenis_kelamin == 'L')
+                                            Jantan
+                                        @elseif ($pet->jenis_kelamin == 'P')
+                                            Betina
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+
+                                    <td>
+                                        <a href="{{ route('admin.pet.edit', $pet->idpet) }}"
+                                           class="btn btn-sm btn-warning">
+                                            Edit
+                                        </a>
+
+                                        <form action="{{ route('admin.pet.delete', $pet->idpet) }}"
+                                              method="POST"
+                                              style="display:inline-block;">
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    {{-- Tabel Data --}}
-    <div class="table-responsive">
-      <table class="table table-hover table-bordered align-middle text-center shadow-sm rshp-table w-100">
-        <thead style="background-color:#fde68a; border:2px solid #e0b100;">
-          <tr>
-            <th style="width:5%;">No</th>
-            <th>Nama Hewan</th>
-            <th>Ras</th>
-            <th>Pemilik</th>
-            <th>Jenis Kelamin</th>
-            <th style="width:15%;">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          @forelse ($data as $index => $item)
-          <tr>
-            <td>{{ $index + 1 }}</td>
-            <td>{{ $item->nama }}</td>
-            <td>{{ $item->nama_ras ?? '-' }}</td>
-            <td>{{ $item->nama_pemilik ?? '-' }}</td>
-            <td>
-              @if ($item->jenis_kelamin == 'L')
-                <span class="badge bg-info text-dark">Jantan ♂</span>
-              @elseif ($item->jenis_kelamin == 'P')
-                <span class="badge" style="background-color:#e83e8c; color:white;">Betina ♀</span>
-              @else
-                <span class="badge bg-secondary">Tidak Diketahui</span>
-              @endif
-            </td>
-            <td>
-              <div class="btn-group" role="group">
-                <a href="{{ route('admin.pet.edit', $item->idpet) }}" class="btn btn-sm btn-primary">✏️ Edit</a>
-                <form action="{{ route('admin.pet.delete', $item->idpet) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-                  @csrf
-                  @method('DELETE')
-                  <button type="submit" class="btn btn-sm btn-danger">🗑️ Hapus</button>
-                </form>
-              </div>
-            </td>
-          </tr>
-          @empty
-          <tr>
-            <td colspan="6" class="text-muted fst-italic">Tidak ada data ditemukan.</td>
-          </tr>
-          @endforelse
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
-{{-- CSS agar tabel konsisten dengan halaman lain --}}
-<style>
-  .rshp-table {
-      width: 100%;
-      border: 2px solid #c9a400;
-      border-collapse: collapse !important;
-      background-color: #fffef5;
-  }
-
-  .rshp-table th, .rshp-table td {
-      border: 1.5px solid #d4b400 !important;
-      padding: 10px;
-      vertical-align: middle;
-  }
-
-  .rshp-table tr:hover {
-      background-color: #fff8dc;
-      transition: 0.2s;
-  }
-
-  .btn-group .btn {
-      margin: 0 2px;
-  }
-</style>
+</div>
 @endsection

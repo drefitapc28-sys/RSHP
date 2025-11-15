@@ -1,107 +1,87 @@
-@extends('layout.Dashboard')
+@extends('layouts.lte.main')
 
 @section('title', 'Relasi Role User | RSHP UNAIR')
 
 @section('content')
-<section class="py-5" style="background-color:#fffaf5;">
-  <div class="container-fluid">
-    <h2 class="text-center mb-3 fw-bold" style="color:#2563eb;">🧩 Relasi Role User</h2>
-    <p class="text-center text-muted">
-      Menampilkan hubungan antara <strong>pengguna</strong> dan <strong>perannya</strong> dalam sistem RSHP Universitas Airlangga.
-    </p>
+<div class="app-content">
+    <div class="container-fluid">
 
-    {{-- Tombol Tambah --}}
-    <div class="d-flex justify-content-end mb-3">
-      <a href="{{ route('admin.role-user.create') }}" class="btn btn-success px-4">
-        + Tambah Relasi
-      </a>
+        {{-- Breadcrumb --}}
+        <div class="row mb-3">
+            <div class="col-sm-6">
+                <h3 class="mb-0">Relasi Role User</h3>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="#">Master Data</a></li>
+                    <li class="breadcrumb-item active">Relasi Role User</li>
+                </ol>
+            </div>
+        </div>
+
+        {{-- Card --}}
+        <div class="row">
+            <div class="col-12">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Tabel Relasi Role User</h3>
+                        <div class="card-tools">
+                            <a href="{{ route('admin.role-user.create') }}"
+                               class="btn btn-primary btn-sm">
+                                + Tambah Relasi
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama User</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th style="width:150px">Aksi</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach ($roleUsers as $index => $ru)
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $ru->nama_user }}</td>
+                                    <td>{{ $ru->email_user }}</td>
+                                    <td>{{ $ru->nama_role }}</td>
+                                    <td>{{ $ru->status == 1 ? 'Aktif' : 'Nonaktif' }}</td>
+
+                                    <td>
+                                        <a href="{{ route('admin.role-user.edit', $ru->idrole_user) }}"
+                                           class="btn btn-sm btn-warning">
+                                            Edit
+                                        </a>
+
+                                        <form action="{{ route('admin.role-user.delete', $ru->idrole_user) }}"
+                                              method="POST"
+                                              style="display:inline-block;">
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('Hapus relasi ini?')">
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    {{-- Notifikasi --}}
-    @if(session('success'))
-      <div class="alert alert-success text-center">{{ session('success') }}</div>
-    @endif
-    @if(session('error'))
-      <div class="alert alert-danger text-center">{{ session('error') }}</div>
-    @endif
-
-    {{-- Tabel Data --}}
-    <div class="table-responsive">
-      <table class="table table-hover table-bordered align-middle text-center shadow-sm rshp-table w-100">
-        <thead style="background-color: #fde68a; border: 2px solid #e0b100;">
-          <tr>
-            <th style="width:6%;">No</th>
-            <th>Nama User</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Status</th>
-            <th style="width:15%;">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          @forelse ($data as $index => $row)
-          <tr>
-            <td>{{ $index + 1 }}</td>
-            <td>{{ $row->user_nama }}</td>
-            <td>{{ $row->user_email }}</td>
-            <td>{{ $row->nama_role }}</td>
-            <td>
-              @if ($row->status == 1)
-                <span class="badge bg-success">Aktif</span>
-              @else
-                <span class="badge bg-secondary">Nonaktif</span>
-              @endif
-            </td>
-            <td>
-              <div class="btn-group" role="group">
-                {{-- Tombol Edit --}}
-                <a href="{{ route('admin.role-user.edit', $row->idrole_user) }}" 
-                   class="btn btn-sm btn-primary">✏️ Edit</a>
-
-                {{-- Tombol Hapus --}}
-                <form action="{{ route('admin.role-user.delete', $row->idrole_user) }}" method="POST" 
-                      class="d-inline" 
-                      onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-                  @csrf
-                  @method('DELETE')
-                  <button type="submit" class="btn btn-sm btn-danger">🗑️ Hapus</button>
-                </form>
-              </div>
-            </td>
-          </tr>
-          @empty
-          <tr>
-            <td colspan="6" class="text-muted fst-italic">Belum ada relasi role-user.</td>
-          </tr>
-          @endforelse
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
-{{-- CSS agar konsisten dengan halaman RSHP lain --}}
-<style>
-  .rshp-table {
-      width: 100%;
-      border: 2px solid #c9a400;
-      border-collapse: collapse !important;
-      background-color: #fffef5;
-  }
-
-  .rshp-table th, .rshp-table td {
-      border: 1.5px solid #d4b400 !important;
-      padding: 10px;
-      vertical-align: middle;
-  }
-
-  .rshp-table tr:hover {
-      background-color: #fff8dc;
-      transition: 0.2s;
-  }
-
-  .btn-group .btn {
-      margin: 0 2px;
-  }
-</style>
+</div>
 @endsection

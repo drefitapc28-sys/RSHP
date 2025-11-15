@@ -1,9 +1,9 @@
-@extends('layout.Dashboard')
+@extends('layouts.lte.main')
 
 @section('title', 'Tambah Jenis Hewan | RSHP UNAIR')
 
 @section('content')
-<section class="py-5" style="background-color:#fffaf5;">
+<section class="py-5" style="background-color:#fffff;">
   <div class="container" style="max-width:600px;">
     <div class="card shadow p-4 rounded-4">
       <h3 class="fw-bold text-center mb-3 text-primary">Tambah Jenis Hewan 🐾</h3>
@@ -11,22 +11,18 @@
       <form action="{{ route('admin.jenis-hewan.store') }}" method="POST">
         @csrf
         <div class="mb-3">
-            <label for="nama_jenis_hewan" class="form-label">Nama Jenis Hewan</label>
-            <input type="text" name="nama_jenis_hewan" id="nama_jenis_hewan"
-                  class="form-control @error('nama_jenis_hewan') is-invalid @enderror"
-                  value="{{ old('nama_jenis_hewan') }}"
-                  placeholder="Masukkan nama jenis hewan">
-
-            @error('nama_jenis_hewan')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
+          <label for="nama_jenis_hewan" class="form-label fw-semibold">Nama Jenis Hewan</label>
+          <input type="text" 
+                 name="nama_jenis_hewan" 
+                 id="nama_jenis_hewan"
+                 class="form-control @error('nama_jenis_hewan') is-invalid @enderror"
+                 value="{{ old('nama_jenis_hewan') }}"
+                 placeholder="Masukkan nama jenis hewan...">
+          @error('nama_jenis_hewan')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
         </div>
 
-
-        <!-- <div class="mb-3">
-          <label for="nama_jenis_hewan" class="form-label">Nama Jenis Hewan</label>
-          <input type="text" name="nama_jenis_hewan" id="nama_jenis_hewan" class="form-control" placeholder="Masukkan nama jenis hewan..." required>
-        </div> -->
         <div class="text-end">
           <a href="{{ route('admin.jenis-hewan.index') }}" class="btn btn-secondary">⬅️ Kembali</a>
           <button type="submit" class="btn btn-primary">💾 Simpan</button>

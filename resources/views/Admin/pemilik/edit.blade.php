@@ -1,17 +1,17 @@
-@extends('layout.Dashboard')
+@extends('layouts.lte.main')
 
 @section('title', 'Edit Pemilik Hewan | RSHP UNAIR')
 
 @section('content')
-<section class="py-5" style="background-color:#fffaf5;">
-  <div class="container">
+<section class="py-5" style="background-color:#fffff;">
+  <div class="container" style="max-width:600px;">
+    <div class="card shadow p-4 rounded-4 border-0">
     <h2 class="text-center fw-bold mb-4" style="color:#2563eb;">
       🐾 Edit Pemilik Hewan
     </h2>
 
     {{-- Form Edit Pemilik --}}
     <form action="{{ route('admin.pemilik.update', $pemilik->idpemilik) }}" method="POST" 
-          class="mx-auto border p-4 rounded-4" style="max-width:500px; background-color:white;">
       @csrf
 
       {{-- Nomor WA --}}
@@ -48,7 +48,7 @@
       </div>
 
       {{-- Tombol --}}
-      <div class="text-center mt-4">
+      <div class="text-end mt-4">
         <a href="{{ route('admin.pemilik.index') }}" class="btn btn-secondary me-2">⬅️ Kembali</a>
         <button type="submit" class="btn btn-primary">💾 Simpan Perubahan</button>
       </div>

@@ -9,11 +9,11 @@ use Illuminate\Http\Request;
 class PetController extends Controller
 {
     // ===============================
-    // INDEX - Tampilkan semua data hewan
+    // INDEX - Menampilkan semua data hewan
     // ===============================
     public function index()
     {
-        $data = DB::table('pet')
+        $pets = DB::table('pet')
             ->join('ras_hewan', 'pet.idras_hewan', '=', 'ras_hewan.idras_hewan')
             ->join('pemilik', 'pet.idpemilik', '=', 'pemilik.idpemilik')
             ->join('user', 'pemilik.iduser', '=', 'user.iduser')
@@ -26,17 +26,17 @@ class PetController extends Controller
             ->orderBy('pet.idpet', 'ASC')
             ->get();
 
-        return view('Admin.Pet.index', compact('data'));
+        return view('Admin.Pet.index', compact('pets'));
     }
 
     // ===============================
-    // CREATE - Form tambah data hewan
+    // CREATE - Form tambah data
     // ===============================
     public function create()
     {
         $pemilik = DB::table('pemilik')
             ->join('user', 'pemilik.iduser', '=', 'user.iduser')
-            ->select('pemilik.idpemilik', 'user.nama')
+            ->select('pemilik.idpemilik', 'user.nama as nama_user')
             ->get();
 
         $ras = DB::table('ras_hewan')->select('idras_hewan', 'nama_ras')->get();
@@ -49,36 +49,34 @@ class PetController extends Controller
     // ===============================
     public function store(Request $request)
     {
-        // Panggil validasi helper
         $this->validatePet($request);
 
-        // Panggil helper penyimpanan
-        $this->createPet($request);
+        $this->createPet($request->all());
 
         return redirect()->route('admin.pet.index')
-                         ->with('success', 'Hewan berhasil ditambahkan!');
+                         ->with('success', 'Data hewan berhasil ditambahkan!');
     }
 
     // ===============================
-    // EDIT - Form edit data hewan
+    // EDIT - Form edit data
     // ===============================
     public function edit($id)
     {
-        $data = DB::table('pet')->where('idpet', $id)->first();
+        $pet = DB::table('pet')->where('idpet', $id)->first();
 
-        if (!$data) {
+        if (!$pet) {
             return redirect()->route('admin.pet.index')
                              ->with('error', 'Data hewan tidak ditemukan.');
         }
 
         $pemilik = DB::table('pemilik')
             ->join('user', 'pemilik.iduser', '=', 'user.iduser')
-            ->select('pemilik.idpemilik', 'user.nama')
+            ->select('pemilik.idpemilik', 'user.nama as nama_user')
             ->get();
 
         $ras = DB::table('ras_hewan')->select('idras_hewan', 'nama_ras')->get();
 
-        return view('Admin.Pet.edit', compact('data', 'pemilik', 'ras'));
+        return view('Admin.Pet.edit', compact('pet', 'pemilik', 'ras'));
     }
 
     // ===============================
@@ -86,11 +84,16 @@ class PetController extends Controller
     // ===============================
     public function update(Request $request, $id)
     {
-        // Validasi data
         $this->validatePet($request, $id);
 
-        // Panggil helper update
-        $this->updatePet($request, $id);
+        DB::table('pet')->where('idpet', $id)->update([
+            'nama' => $this->formatNama($request->nama),
+            'tanggal_lahir' => $request->tanggal_lahir,
+            'warna_tanda' => $request->warna_tanda,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'idpemilik' => $request->idpemilik,
+            'idras_hewan' => $request->idras_hewan,
+        ]);
 
         return redirect()->route('admin.pet.index')
                          ->with('success', 'Data hewan berhasil diperbarui!');
@@ -108,11 +111,10 @@ class PetController extends Controller
     }
 
     // ======================================================
-    // PRIVATE HELPER FUNCTIONS
+    // PROTECTED HELPER FUNCTIONS
     // ======================================================
 
-    // Validasi data pet
-    private function validatePet(Request $request, $id = null)
+    protected function validatePet(Request $request, $id = null)
     {
         $rules = [
             'nama' => 'required|string|min:2|max:100',
@@ -125,46 +127,28 @@ class PetController extends Controller
 
         $messages = [
             'nama.required' => 'Nama hewan wajib diisi.',
-            'nama.string' => 'Nama hewan harus berupa teks.',
-            'nama.min' => 'Nama hewan minimal :min karakter.',
-            'nama.max' => 'Nama hewan maksimal :max karakter.',
-            'tanggal_lahir.date' => 'Tanggal lahir harus berupa format tanggal yang valid.',
-            'warna_tanda.string' => 'Warna/tanda harus berupa teks.',
-            'warna_tanda.max' => 'Warna/tanda maksimal :max karakter.',
-            'jenis_kelamin.required' => 'Jenis kelamin wajib dipilih.',
             'jenis_kelamin.in' => 'Jenis kelamin hanya boleh L (Jantan) atau P (Betina).',
-            'idpemilik.required' => 'Pemilik wajib dipilih.',
             'idpemilik.exists' => 'Pemilik tidak ditemukan dalam database.',
-            'idras_hewan.required' => 'Ras hewan wajib dipilih.',
             'idras_hewan.exists' => 'Ras hewan tidak ditemukan dalam database.',
         ];
 
         $request->validate($rules, $messages);
     }
 
-    // Helper: Simpan data hewan baru
-    private function createPet(Request $request)
+    protected function createPet(array $data)
     {
         DB::table('pet')->insert([
-            'nama' => ucwords(strtolower(trim($request->nama))),
-            'tanggal_lahir' => $request->tanggal_lahir,
-            'warna_tanda' => $request->warna_tanda,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'idpemilik' => $request->idpemilik,
-            'idras_hewan' => $request->idras_hewan,
+            'nama' => $this->formatNama($data['nama']),
+            'tanggal_lahir' => $data['tanggal_lahir'] ?? null,
+            'warna_tanda' => $data['warna_tanda'] ?? null,
+            'jenis_kelamin' => $data['jenis_kelamin'],
+            'idpemilik' => $data['idpemilik'],
+            'idras_hewan' => $data['idras_hewan'],
         ]);
     }
 
-    // Helper: Update data hewan
-    private function updatePet(Request $request, $id)
+    protected function formatNama($nama)
     {
-        DB::table('pet')->where('idpet', $id)->update([
-            'nama' => ucwords(strtolower(trim($request->nama))),
-            'tanggal_lahir' => $request->tanggal_lahir,
-            'warna_tanda' => $request->warna_tanda,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'idpemilik' => $request->idpemilik,
-            'idras_hewan' => $request->idras_hewan,
-        ]);
+        return ucwords(strtolower(trim($nama)));
     }
 }

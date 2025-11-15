@@ -1,27 +1,27 @@
-@extends('layout.Dashboard')
+@extends('layouts.lte.main')
 
-@section('title', 'Edit Role | RSHP Unair')
+@section('title', 'Edit Role | RSHP UNAIR')
 
 @section('content')
-<div class="container mt-4">
-    <div class="card shadow-lg p-4 border-0 rounded-4">
-        <h3 class="text-center mb-3 text-gradient fw-bold">✏️ Edit Role</h3>
+<section class="py-5" style="background-color:#fffff;">
+  <div class="container" style="max-width:600px;">
+    <div class="card shadow p-4 rounded-4 border-0">
+      <h3 class="fw-bold text-center mb-4 text-primary">Edit Role 🧩</h3>
 
-        <form action="{{ route('admin.role.update', $role->idrole) }}" method="POST">
-            @csrf
-            <div class="mb-3">
-                <label for="nama_role" class="form-label fw-semibold">Nama Role</label>
-                <input type="text" class="form-control" id="nama_role" name="nama_role"
-                       value="{{ $role->nama_role }}" required>
-            </div>
+      <form action="{{ route('admin.role.update', $role->idrole) }}" method="POST">
+        @csrf
+        <div class="mb-3">
+          <label for="nama_role" class="form-label fw-semibold">Nama Role</label>
+          <input type="text" name="nama_role" id="nama_role"
+                 class="form-control" value="{{ $role->nama_role }}" required>
+        </div>
 
-            <div class="d-flex justify-content-between mt-4">
-                <a href="{{ route('admin.role.index') }}" class="btn btn-secondary">⬅️ Kembali</a>
-                <button type="submit" class="btn btn-primary px-4">💾 Update</button>
-            </div>
-        </form>
+        <div class="text-end mt-4">
+          <a href="{{ route('admin.role.index') }}" class="btn btn-secondary px-4">⬅️ Kembali</a>
+          <button type="submit" class="btn btn-primary px-4">💾 Simpan Perubahan</button>
+        </div>
+      </form>
     </div>
-</div>
+  </div>
+</section>
 @endsection
-
-

@@ -1,100 +1,83 @@
-@extends('layout.dashboard')
-
-@section('title','Dashboard Data Master | RSHP Universitas Airlangga')
+@extends('layouts.lte.main')
 
 @section('content')
-<style>
-.section-box {
-    padding: 30px;
-    background: #ffffff;
-    border-radius: 14px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
 
-.stats{
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:center;
-    gap:15px;
-    margin: 25px 0;
-}
+<!--begin::App Content Header-->
+<div class="app-content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <!--begin::Row-->
+            <div class="col-sm-6">
+                <h3 class="mb-0">Dashboard</h3>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                </ol>
+            </div>
+            <!--end::Row-->
+        </div>
+    </div>
+</div>
+<!--end::App Content Header-->
 
-.card-stat {
-    background: linear-gradient(135deg,#a8d8ff,#ffeaa7);
-    color:#2d3436;
-    padding:16px;
-    width:165px;
-    border-radius:12px;
-    text-align:center;
-    box-shadow:0 2px 6px rgba(0,0,0,0.1);
-}
-.card-stat h4 { font-size:22px; font-weight:700; margin:0; }
-.card-stat p { margin:3px 0 0; font-size:13px; font-weight:600; color:#2d3436; }
+<!--begin::App Content-->
+<div class="app-content">
+    <div class="container-fluid">
 
-ul.menu{
-    list-style:none;
-    padding:0;
-    margin:25px auto;
-    max-width:480px;
-}
-ul.menu li{
-    margin:10px 0;
-}
-ul.menu li a{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:8px;
-    text-decoration:none!important;
-    padding:12px;
-    background:linear-gradient(135deg,#74b9ff,#ffeaa7);
-    color:#2d3436;
-    font-weight:bold;
-    border-radius:8px;
-    border:1px solid #dcdcdc;
-    transition:.2s;
-}
-ul.menu li a:hover{
-    background:linear-gradient(135deg,#4aa3ff,#ffd86b);
-    transform:translateY(-2px);
-}
-</style>
+        <div class="row">
+            <!--begin::Row-->
 
-<div class="container">
-<section class="section-box text-center">
-    <h2 class="fw-bold">📊 Dashboard Data Master</h2>
-    <p class="text-muted">Kelola Data Utama RSHP Universitas Airlangga</p>
+            <div class="col-lg-3 col-6">
+                <!--begin::Small Box Widget 1-->
+                <div class="small-box text-bg-primary">
+                    <div class="inner">
+                        <h3>150</h3>
 
-    {{-- STAT --}}
-    <div class="stats">
+                        <p>New Orders</p>
+                    </div>
+                    <div class="small-box-icon" fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true">
+                        <svg>
+                            <path
+                                d="M9.25 22.5a.75.75 0 0 1-.75.75h-1.386c-.17 0-.318-.114-.362-.278l.558 9.592a.752.752 0 0 2-.886-.3.63.63 0 0 2-.886.414.336.75.75 0 0 2-.75.75h15.75a.75.75 0 0 2-.75-.75z">
+                            </path>
+                        </svg>
+                    </div>
 
-        <div class="card-stat"><h4>{{ $jumlahUser }}</h4><p>User</p></div>
-        <div class="card-stat"><h4>{{ $jumlahRole }}</h4><p>Role</p></div>
-        <div class="card-stat"><h4>{{ $jumlahPemilik }}</h4><p>Pemilik</p></div>
-        <div class="card-stat"><h4>{{ $jumlahPet }}</h4><p>Pet</p></div>
+                    <a href="#" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                        More info <i class="bi bi-link-45deg"></i>
+                    </a>
+                </div>
+                <!--end::Small Box Widget 1-->
+            </div>
 
-        <div class="card-stat"><h4>{{ $jumlahJenis }}</h4><p>Jenis Hewan</p></div>
-        <div class="card-stat"><h4>{{ $jumlahRas }}</h4><p>Ras Hewan</p></div>
+            <div class="col-lg-3 col-6">
+                <!--begin::Small Box Widget 2-->
+                <div class="small-box text-bg-success">
+                    <div class="inner">
+                        <h3>53<sup style="font-size: 20px">%</sup></h3>
 
-        <div class="card-stat"><h4>{{ $jumlahKategori }}</h4><p>Kategori</p></div>
-        <div class="card-stat"><h4>{{ $jumlahKategoriKlinis }}</h4><p>Kategori Klinis</p></div>
-        <div class="card-stat"><h4>{{ $jumlahKodeTindakan }}</h4><p>Kode Tindakan</p></div>
+                        <p>Bounce Rate</p>
+                    </div>
+                    <div class="small-box-icon">
+                        <!-- ikon -->
+                    </div>
+                    <a href="#" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                        More info <i class="bi bi-link-45deg"></i>
+                    </a>
+                </div>
+                <!--end::Small Box Widget 2-->
+            </div>
+
+            <!--end::Row-->
+        </div>
 
     </div>
-
-    {{-- MENU --}}
-    <ul class="menu">
-        <li><a href="{{ route('admin.role-user.index') }}">Data User</a></li>
-        <li><a href="{{ route('admin.role.index') }}">Role</a></li>
-        <li><a href="{{ route('admin.pemilik.index') }}">Pemilik Hewan</a></li>
-        <li><a href="{{ route('admin.pet.index') }}">Data Pet</a></li>
-        <li><a href="{{ route('admin.jenis-hewan.index') }}">Jenis Hewan</a></li>
-        <li><a href="{{ route('admin.ras-hewan.index') }}"> Ras Hewan</a></li>
-        <li><a href="{{ route('admin.kategori.index') }}"> Kategori Terapi</a></li>
-        <li><a href="{{ route('admin.kategori-klinis.index') }}"> Kategori Klinis</a></li>
-        <li><a href="{{ route('admin.kode-tindakan-terapi.index') }}"> Kode Tindakan Terapi</a></li>
-    </ul>
-
-</section>
 </div>
+<!--end::App Content-->
+
 @endsection

@@ -8,11 +8,12 @@ use App\Http\Controllers\Controller;
 
 class KodeTindakanTerapiController extends Controller
 {
-    // ======== INDEX =======
+    // =======================
+    // INDEX - Tampilkan semua data
+    // =======================
     public function index()
     {
-        // Menampilkan data dengan relasi kategori dan kategori klinis
-        $data = DB::table('kode_tindakan_terapi')
+        $kodeTindakan = DB::table('kode_tindakan_terapi')
             ->join('kategori', 'kode_tindakan_terapi.idkategori', '=', 'kategori.idkategori')
             ->join('kategori_klinis', 'kode_tindakan_terapi.idkategori_klinis', '=', 'kategori_klinis.idkategori_klinis')
             ->select(
@@ -23,41 +24,40 @@ class KodeTindakanTerapiController extends Controller
             ->orderBy('idkode_tindakan_terapi', 'ASC')
             ->get();
 
-        return view('Admin.Kode-tindakan-terapi.index', compact('data'));
+        return view('Admin.Kode-tindakan-terapi.index', compact('kodeTindakan'));
     }
 
-    // ======== CREATE =======
+    // =======================
+    // CREATE - Form tambah data
+    // =======================
     public function create()
     {
-        // Mengambil data kategori dan kategori klinis untuk dropdown
         $kategori = DB::table('kategori')->get();
         $kategoriKlinis = DB::table('kategori_klinis')->get();
-
         return view('Admin.Kode-tindakan-terapi.create', compact('kategori', 'kategoriKlinis'));
     }
 
-    // ======= STORE =======
+    // =======================
+    // STORE - Simpan data baru
+    // =======================
     public function store(Request $request)
     {
-        // Validasi input menggunakan helper
         $this->validateKodeTindakan($request);
-
-        // Generate kode otomatis dan simpan data
         $this->createKodeTindakan($request);
 
         return redirect()->route('admin.kode-tindakan-terapi.index')
-            ->with('success', 'Kode tindakan berhasil ditambahkan!');
+            ->with('success', 'Kode tindakan terapi berhasil ditambahkan!');
     }
 
-    // ====== EDIT =======
+    // =======================
+    // EDIT - Form edit data
+    // =======================
     public function edit($id)
     {
-        // Ambil data utama dan data relasi untuk form edit
         $data = DB::table('kode_tindakan_terapi')->where('idkode_tindakan_terapi', $id)->first();
         $kategori = DB::table('kategori')->get();
         $kategoriKlinis = DB::table('kategori_klinis')->get();
 
-        // Jika data tidak ditemukan
         if (!$data) {
             return redirect()->route('admin.kode-tindakan-terapi.index')
                 ->with('error', 'Data tidak ditemukan.');
@@ -66,13 +66,13 @@ class KodeTindakanTerapiController extends Controller
         return view('Admin.Kode-tindakan-terapi.edit', compact('data', 'kategori', 'kategoriKlinis'));
     }
 
-    // ======== UPDATE =======
+    // =======================
+    // UPDATE - Simpan perubahan
+    // =======================
     public function update(Request $request, $id)
     {
-        // Validasi input
         $this->validateKodeTindakan($request, $id);
 
-        // Update data ke database
         DB::table('kode_tindakan_terapi')->where('idkode_tindakan_terapi', $id)->update([
             'kode' => strtoupper(trim($request->kode)),
             'deskripsi_tindakan_terapi' => $this->formatDeskripsi($request->deskripsi_tindakan_terapi),
@@ -81,23 +81,24 @@ class KodeTindakanTerapiController extends Controller
         ]);
 
         return redirect()->route('admin.kode-tindakan-terapi.index')
-            ->with('success', 'Kode tindakan berhasil diperbarui!');
+            ->with('success', 'Kode tindakan terapi berhasil diperbarui!');
     }
 
-    // ======= DESTROY =======
+    // =======================
+    // DESTROY - Hapus data
+    // =======================
     public function destroy($id)
     {
-        // Hapus data berdasarkan ID
         DB::table('kode_tindakan_terapi')->where('idkode_tindakan_terapi', $id)->delete();
 
         return redirect()->route('admin.kode-tindakan-terapi.index')
-            ->with('success', 'Kode tindakan berhasil dihapus!');
+            ->with('success', 'Kode tindakan terapi berhasil dihapus!');
     }
 
-    // ======= PRIVATE HELPERS =======
-
-    // Fungsi validasi input
-    private function validateKodeTindakan(Request $request, $id = null)
+    // =====================================================
+    // PROTECTED HELPER FUNCTIONS
+    // =====================================================
+    protected function validateKodeTindakan(Request $request, $id = null)
     {
         $rules = [
             'deskripsi_tindakan_terapi' => 'required|string|min:5|max:255',
@@ -111,25 +112,18 @@ class KodeTindakanTerapiController extends Controller
             'deskripsi_tindakan_terapi.min' => 'Deskripsi minimal :min karakter.',
             'deskripsi_tindakan_terapi.max' => 'Deskripsi maksimal :max karakter.',
             'idkategori.required' => 'Kategori wajib dipilih.',
-            'idkategori.integer' => 'ID kategori harus berupa angka.',
             'idkategori.exists' => 'Kategori yang dipilih tidak valid.',
             'idkategori_klinis.required' => 'Kategori klinis wajib dipilih.',
-            'idkategori_klinis.integer' => 'ID kategori klinis harus berupa angka.',
             'idkategori_klinis.exists' => 'Kategori klinis yang dipilih tidak valid.',
         ];
 
         $request->validate($rules, $messages);
     }
 
-    // Fungsi untuk membuat kode dan menyimpan data
-    private function createKodeTindakan(Request $request)
+    protected function createKodeTindakan(Request $request)
     {
-        // Ambil kode terakhir dari database
-        $last = DB::table('kode_tindakan_terapi')
-            ->orderBy('idkode_tindakan_terapi', 'desc')
-            ->first();
+        $last = DB::table('kode_tindakan_terapi')->orderBy('idkode_tindakan_terapi', 'desc')->first();
 
-        // Tentukan kode baru
         if (!$last) {
             $newCode = 'T01';
         } else {
@@ -138,7 +132,6 @@ class KodeTindakanTerapiController extends Controller
             $newCode = 'T' . str_pad($newNumber, 2, '0', STR_PAD_LEFT);
         }
 
-        // Simpan ke database
         DB::table('kode_tindakan_terapi')->insert([
             'kode' => $newCode,
             'deskripsi_tindakan_terapi' => $this->formatDeskripsi($request->deskripsi_tindakan_terapi),
@@ -147,8 +140,7 @@ class KodeTindakanTerapiController extends Controller
         ]);
     }
 
-    // Fungsi untuk format teks deskripsi
-    private function formatDeskripsi($text)
+    protected function formatDeskripsi($text)
     {
         return ucfirst(strtolower(trim($text)));
     }

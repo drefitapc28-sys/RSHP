@@ -1,9 +1,9 @@
-@extends('layout.Dashboard')
+@extends('layouts.lte.main')
 
 @section('title', 'Tambah Kode Tindakan | RSHP UNAIR')
 
 @section('content')
-<section class="py-5" style="background-color:#fffaf5;">
+<section class="py-5" style="background-color:#fffff;">
   <div class="container" style="max-width:700px;">
     <div class="card shadow p-4 rounded-4">
       <h3 class="fw-bold text-center mb-4 text-primary">Tambah Kode Tindakan 💉</h3>
@@ -19,8 +19,8 @@
                  value="{{ old('deskripsi_tindakan_terapi') }}"
                  placeholder="Masukkan deskripsi tindakan...">
 
-        @error ('deskripsi_tindakan_terapi')
-            <div class="alert alert-danger">{{ $message }}</div>
+        @error('deskripsi_tindakan_terapi')
+          <div class="invalid-feedback d-block">{{ $message }}</div>
         @enderror
         </div>
 

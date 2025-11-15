@@ -1,112 +1,85 @@
-@extends('layout.Dashboard')
+@extends('layouts.lte.main')
 
 @section('title', 'Data Jenis Hewan | RSHP Unair')
 
 @section('content')
-<div class="container-fluid mt-4">
-    <div class="card shadow-lg border-0 rounded-4 p-4">
-        <h2 class="text-center mb-3 text-gradient fw-bold">🐾 Data Jenis Hewan</h2>
-        <p class="text-center text-muted">
-            Berikut adalah daftar <strong>jenis hewan</strong> yang terdaftar pada sistem 
-            <strong>RSHP Universitas Airlangga</strong>.
-        </p>
 
-        {{-- Alert notifikasi berhasil --}}
-        @if(session('success'))
-            <div class="alert alert-success text-center fw-semibold">
-                {{ session('success') }}
+<div class="app-content">
+    <div class="container-fluid">
+
+        {{-- Breadcrumb --}}
+        <div class="row mb-3">
+            <div class="col-sm-6">
+                <h3 class="mb-0">Jenis Hewan</h3>
             </div>
-        @endif
-
-        {{-- Tombol Tambah --}}
-        <div class="d-flex justify-content-end mb-3">
-            <a href="{{ route('admin.jenis-hewan.create') }}" class="btn btn-success px-4">
-                + Tambah Jenis Hewan
-            </a>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="#">Master Data</a></li>
+                    <li class="breadcrumb-item active">Jenis Hewan</li>
+                </ol>
+            </div>
         </div>
 
-        {{-- Tabel Jenis Hewan --}}
-        <div class="table-responsive">
-            <table class="table table-hover table-bordered align-middle text-center shadow-sm rshp-table w-100">
-                <thead style="background-color: #fde68a; border: 2px solid #e0b100;">
-                    <tr>
-                        <th style="width:8%;">No</th>
-                        <th>Nama Jenis Hewan</th>
-                        <th style="width:20%;">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($data as $index => $row)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $row->nama_jenis_hewan }}</td>
-                        <td>
-                            <div class="btn-group" role="group">
-                                <a href="{{ route('admin.jenis-hewan.edit', $row->idjenis_hewan) }}" 
-                                   class="btn btn-sm btn-primary">✏️ Edit</a>
-                                <form action="{{ route('admin.jenis-hewan.delete', $row->idjenis_hewan) }}" 
-                                      method="POST" style="display:inline-block;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger"
-                                            onclick="return confirm('Yakin ingin menghapus data ini?')">🗑️ Hapus</button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="3" class="text-muted fst-italic">Tidak ada data ditemukan.</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+        {{-- Card Table --}}
+        <div class="row">
+            <div class="col-12">
+            
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Tabel Data Jenis Hewan</h3>
+
+                        <div class="card-tools">
+                            <a href="{{ route('admin.jenis-hewan.create') }}" class="btn btn-primary btn-sm">
+                                + Tambah Jenis Hewan
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px">No</th>
+                                    <th>Nama Jenis Hewan</th>
+                                    <th style="width: 150px">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($jenisHewan as $index => $item)
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $item->nama_jenis_hewan }}</td>
+                                    <td>
+                                        <a href="{{ route('admin.jenis-hewan.edit', $item->idjenis_hewan) }}"
+                                           class="btn btn-sm btn-warning">Edit</a>
+
+                                        <form action="{{ route('admin.jenis-hewan.delete', $item->idjenis_hewan) }}"
+                                              method="POST"
+                                              style="display:inline-block;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                    onclick="return confirm('Apakah yakin ingin menghapus?')"
+                                                    class="btn btn-sm btn-danger">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="card-footer clearfix">
+                    </div>
+
+                </div>
+
+            </div>
         </div>
+
     </div>
 </div>
 
-{{-- CSS --}}
-<style>
-    .rshp-table {
-        width: 100%;
-        border: 2px solid #c9a400;
-        border-collapse: collapse !important;
-        background-color: #fffef5;
-    }
-
-    .rshp-table th, .rshp-table td {
-        border: 1.5px solid #d4b400 !important;
-        padding: 10px;
-        vertical-align: middle;
-    }
-
-    .rshp-table tr:hover {
-        background-color: #fff8dc;
-        transition: 0.2s;
-    }
-
-    .card {
-        margin: 0 20px;
-    }
-
-    .btn-group .btn {
-        border-radius: 6px;
-        margin: 0 2px;
-    }
-
-    .btn-primary {
-        background-color: #1976d2;
-        border-color: #115293;
-    }
-
-    .btn-danger {
-        background-color: #dc3545;
-        border-color: #b02a37;
-    }
-
-    .btn-success {
-        background-color: #28a745;
-        border-color: #1e7e34;
-    }
-</style>
 @endsection

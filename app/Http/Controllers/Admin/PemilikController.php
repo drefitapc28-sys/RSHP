@@ -8,11 +8,12 @@ use Illuminate\Support\Facades\DB;
 
 class PemilikController extends Controller
 {
-    // ======= INDEX =======
+    // =======================
+    // INDEX - Menampilkan data pemilik dengan relasi user
+    // =======================
     public function index()
     {
-        // Gabungkan tabel user agar nama dan email user bisa ditampilkan
-        $data = DB::table('pemilik')
+        $pemilik = DB::table('pemilik')
             ->join('user', 'pemilik.iduser', '=', 'user.iduser')
             ->select(
                 'pemilik.*',
@@ -22,59 +23,61 @@ class PemilikController extends Controller
             ->orderBy('idpemilik', 'ASC')
             ->get();
 
-        return view('Admin.Pemilik.index', compact('data'));
+        return view('Admin.Pemilik.index', compact('pemilik'));
     }
 
-
-    // ======= CREATE =======
+    // =======================
+    // CREATE - Form tambah pemilik
+    // =======================
     public function create()
     {
-        // Ambil data user untuk dropdown (user pemilik)
         $users = DB::table('user')->get();
         return view('Admin.Pemilik.create', compact('users'));
     }
 
-    // ======= STORE =======
+    // =======================
+    // STORE - Simpan data baru
+    // =======================
     public function store(Request $request)
     {
-        // Validasi data
         $this->validatePemilik($request);
-
-        // Simpan data baru
         $this->createPemilik($request);
 
         return redirect()->route('admin.pemilik.index')
                          ->with('success', 'Data pemilik berhasil ditambahkan!');
     }
 
-    // ======= EDIT =======
+    // =======================
+    // EDIT - Form edit pemilik
+    // =======================
     public function edit($id)
     {
-        // Ambil data pemilik dan semua user untuk dropdown
         $pemilik = DB::table('pemilik')->where('idpemilik', $id)->first();
         $users = DB::table('user')->get();
 
         if (!$pemilik) {
-            return redirect()->route('admin.pemilik.index')->with('error', 'Data pemilik tidak ditemukan.');
+            return redirect()->route('admin.pemilik.index')
+                             ->with('error', 'Data pemilik tidak ditemukan.');
         }
 
         return view('Admin.Pemilik.edit', compact('pemilik', 'users'));
     }
 
-    // ====== UPDATE =======
+    // =======================
+    // UPDATE - Simpan perubahan
+    // =======================
     public function update(Request $request, $id)
     {
-        // Validasi input
         $this->validatePemilik($request, $id);
-
-        // Update data
         $this->updatePemilik($request, $id);
 
         return redirect()->route('admin.pemilik.index')
                          ->with('success', 'Data pemilik berhasil diperbarui!');
     }
 
-    // ====== DESTROY =======
+    // =======================
+    // DESTROY - Hapus data
+    // =======================
     public function destroy($id)
     {
         DB::table('pemilik')->where('idpemilik', $id)->delete();
@@ -83,16 +86,21 @@ class PemilikController extends Controller
                          ->with('success', 'Data pemilik berhasil dihapus!');
     }
 
-    // ======= PRIVATE HELPERS =======
-
-    // Helper: Validasi data pemilik
-    private function validatePemilik(Request $request, $id = null)
+    // ======================================================
+    // 🔹 PROTECTED HELPER FUNCTIONS
+    // ======================================================
+    protected function validatePemilik(Request $request, $id = null)
     {
         $rules = [
-            'no_wa' => 'required|string|min:10|max:15|regex:/^[0-9]+$/',
+            'no_wa' => [
+                'required',
+                'string',
+                'min:10',
+                'max:15',
+                'regex:/^[0-9]+$/',
+            ],
             'alamat' => 'required|string|min:5|max:255',
             'iduser' => 'required|exists:user,iduser',
-            
         ];
 
         $messages = [
@@ -111,22 +119,27 @@ class PemilikController extends Controller
         $request->validate($rules, $messages);
     }
 
-    // Helper: Simpan data pemilik baru
-    private function createPemilik(Request $request)
+    protected function createPemilik(Request $request)
     {
+        $last = DB::table('pemilik')->orderBy('idpemilik', 'desc')->first();
+        if ($last) {
+            $newId = $last->idpemilik + 1;
+        } else {
+            $newId = 1;
+        }
         DB::table('pemilik')->insert([
-            'no_wa' => $request->no_wa,
-            'alamat' => $request->alamat,
+            'idpemilik' => $newId,
+            'no_wa' => trim($request->no_wa),
+            'alamat' => ucfirst(strtolower(trim($request->alamat))),
             'iduser' => $request->iduser,
         ]);
     }
 
-    // Helper: Update data pemilik
-    private function updatePemilik(Request $request, $id)
+    protected function updatePemilik(Request $request, $id)
     {
         DB::table('pemilik')->where('idpemilik', $id)->update([
-            'no_wa' => $request->no_wa,
-            'alamat' => $request->alamat,
+            'no_wa' => trim($request->no_wa),
+            'alamat' => ucfirst(strtolower(trim($request->alamat))),
             'iduser' => $request->iduser,
         ]);
     }

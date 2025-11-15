@@ -1,82 +1,77 @@
-@extends('layout.Dashboard')
+@extends('layouts.lte.main') 
 
-@section('title', 'Data Ras Hewan | RSHP Unair')
-
+@section('title', 'Data Ras Hewan | RSHP UNAIR')
 @section('content')
-<div class="container-fluid mt-4">
-    <div class="card shadow-lg border-0 rounded-4 p-4">
-        <h2 class="text-center mb-3 text-gradient fw-bold">🐕 Data Ras Hewan</h2>
-        <p class="text-center text-muted">
-            Berikut adalah daftar ras hewan yang terdaftar di 
-            <strong>RSHP Universitas Airlangga</strong>.
-        </p>
+<div class="app-content">
+    <div class="container-fluid">
 
-        <div class="d-flex justify-content-end mb-3">
-            <a href="{{ route('admin.ras-hewan.create') }}" class="btn btn-success px-4">
-                + Tambah Ras Hewan
-            </a>
+        {{-- Breadcrumb --}}
+        <div class="row mb-3">
+            <div class="col-sm-6">
+                <h3 class="mb-0">Ras Hewan</h3>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="#">Master Data</a></li>
+                    <li class="breadcrumb-item active">Ras Hewan</li>
+                </ol>
+            </div>
         </div>
+        {{-- Card Table --}}
+        <div class="row">
+            <div class="col-12">
+            
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Tabel Data Ras Hewan</h3>
+                        <div class="card-tools">
+                            <a href="{{ route('admin.ras-hewan.create') }}" class="btn btn-primary btn-sm">
+                                + Tambah Ras Hewan
+                            </a>
+                        </div>
+                    </div>
 
-        <div class="table-responsive">
-            <table class="table table-hover table-bordered align-middle text-center shadow-sm rshp-table w-100">
-                <thead style="background-color: #fde68a; border: 2px solid #e0b100;">
-                    <tr>
-                        <th style="width:5%;">No</th>
-                        <th>Nama Ras</th>
-                        <th>Jenis Hewan</th>
-                        <th style="width:15%;">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($data as $index => $row)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $row->nama_ras }}</td>
-                        <td>{{ $row->nama_jenis_hewan }}</td>
-                        <td>
-                            <div class="btn-group" role="group">
-                                <a href="{{ route('admin.ras-hewan.edit', $row->idras_hewan) }}" class="btn btn-sm btn-primary">✏️ Edit</a>
-                                <form action="{{ route('admin.ras-hewan.delete', $row->idras_hewan) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger">🗑️ Hapus</button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="4" class="text-muted fst-italic">Tidak ada data ditemukan.</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px">No</th>
+                                    <th>Nama Ras Hewan</th>
+                                    <th style="width: 150px">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($rasHewan as $index => $item)
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $item->nama_ras}}</td>
+                                    <td>
+                                        <a href="{{ route('admin.ras-hewan.edit', $item->idras_hewan) }}"
+                                           class="btn btn-sm btn-warning">Edit</a>
+
+                                        <form action="{{ route('admin.ras-hewan.delete', $item->idras_hewan) }}"
+                                              method="POST"
+                                              style="display:inline-block;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer clearfix">
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-{{-- CSS agar konsisten dengan halaman lain --}}
-<style>
-    .rshp-table {
-        width: 100%;
-        border: 2px solid #c9a400;
-        border-collapse: collapse !important;
-        background-color: #fffef5;
-    }
-
-    .rshp-table th, .rshp-table td {
-        border: 1.5px solid #d4b400 !important;
-        padding: 10px;
-        vertical-align: middle;
-    }
-
-    .rshp-table tr:hover {
-        background-color: #fff8dc;
-        transition: 0.2s;
-    }
-
-    .card {
-        margin: 0 20px;
-    }
-</style>
 @endsection

@@ -1,9 +1,9 @@
-@extends('layout.Dashboard')
+@extends('layouts.lte.main')  
 
 @section('title', 'Edit Kategori | RSHP UNAIR')
 
 @section('content')
-<section class="py-5" style="background-color:#fffaf5;">
+<section class="py-5" style="background-color:#fffff;">
   <div class="container" style="max-width:600px;">
     <div class="card shadow p-4 rounded-4">
       <h3 class="fw-bold text-center mb-3 text-primary">Edit Kategori 💉</h3>
@@ -12,7 +12,15 @@
         @csrf
         <div class="mb-3">
           <label for="nama_kategori" class="form-label fw-semibold">Nama Kategori</label>
-          <input type="text" name="nama_kategori" id="nama_kategori" value="{{ $kategori->nama_kategori }}" class="form-control" required>
+          <input type="text"
+                 name="nama_kategori"
+                 id="nama_kategori"
+                 value="{{ old('nama_kategori', $kategori->nama_kategori) }}"
+                 class="form-control @error('nama_kategori') is-invalid @enderror"
+                 placeholder="Masukkan nama kategori...">
+          @error('nama_kategori')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
         </div>
 
         <div class="text-end">

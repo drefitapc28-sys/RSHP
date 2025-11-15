@@ -8,87 +8,105 @@ use Illuminate\Http\Request;
 
 class RoleUserController extends Controller
 {
-    // ========= INDEX =======
+    // ===============================
+    // INDEX - Menampilkan semua relasi role-user
+    // ===============================
     public function index()
     {
-        $data = DB::table('role_user')
+        $roleUsers = DB::table('role_user')
             ->join('user', 'role_user.iduser', '=', 'user.iduser')
             ->join('role', 'role_user.idrole', '=', 'role.idrole')
             ->select(
-                'role_user.*',
-                'user.nama as user_nama',
-                'user.email as user_email',
-                'role.nama_role'
+                'role_user.idrole_user',
+                'user.nama as nama_user',
+                'user.email as email_user',
+                'role.nama_role',
+                'role_user.status'
             )
             ->orderBy('idrole_user', 'ASC')
             ->get();
 
-        return view('Admin.Role-user.index', compact('data'));
+        return view('Admin.Role-user.index', compact('roleUsers'));
     }
 
-    // ========= CREATE =======
+    // ===============================
+    // CREATE - Form tambah relasi baru
+    // ===============================
     public function create()
     {
-        $roles = DB::table('role')->get();
+        $roles = DB::table('role')->orderBy('idrole', 'ASC')->get();
         return view('Admin.Role-user.create', compact('roles'));
     }
 
-    // ======== STORE =======
+    // ===============================
+    // STORE - Simpan user baru dan relasinya
+    // ===============================
     public function store(Request $request)
     {
         $this->validateNewUserRole($request);
 
         $userId = $this->createUser($request);
-
         $this->createRoleUser($request, $userId);
 
         return redirect()->route('admin.role-user.index')
-            ->with('success', 'User baru berhasil dibuat dan role berhasil ditambahkan!');
+                         ->with('success', 'User baru dan role berhasil ditambahkan!');
     }
 
-    // ======== EDIT =======
+    // ===============================
+    // EDIT - Form edit user & role
+    // ===============================
     public function edit($id)
     {
-        $data = DB::table('role_user')
+        $roleUser = DB::table('role_user')
             ->join('user', 'role_user.iduser', '=', 'user.iduser')
+            ->join('role', 'role_user.idrole', '=', 'role.idrole')
+            ->select(
+                'role_user.*',
+                'user.nama as nama_user',
+                'user.email as email_user'
+            )
             ->where('idrole_user', $id)
-            ->select('role_user.*', 'user.nama as user_nama', 'user.email as user_email')
             ->first();
 
-        $roles = DB::table('role')->get();
-
-        if (!$data) {
-            return redirect()->route('admin.role-user.index')->with('error', 'Data tidak ditemukan.');
+        if (!$roleUser) {
+            return redirect()->route('admin.role-user.index')
+                             ->with('error', 'Data tidak ditemukan.');
         }
 
-        return view('Admin.Role-user.edit', compact('data', 'roles'));
+        $roles = DB::table('role')->orderBy('idrole', 'ASC')->get();
+
+        return view('Admin.Role-user.edit', compact('roleUser', 'roles'));
     }
 
-    // ======== UPDATE =======
+    // ===============================
+    // UPDATE - Perbarui data user & relasi role
+    // ===============================
     public function update(Request $request, $id)
     {
-        // Validasi gabungan: user + role
         $this->validateEditUserRole($request, $id);
-
-        // Update user & relasi role-user
         $this->updateUserAndRole($request, $id);
 
         return redirect()->route('admin.role-user.index')
-            ->with('success', 'Data user dan role berhasil diperbarui!');
+                         ->with('success', 'Data user dan role berhasil diperbarui!');
     }
 
-    // ======== DESTROY =======
+    // ===============================
+    // DESTROY - Hapus relasi role-user
+    // ===============================
     public function destroy($id)
     {
         DB::table('role_user')->where('idrole_user', $id)->delete();
+
         return redirect()->route('admin.role-user.index')
-            ->with('success', 'Relasi role-user berhasil dihapus.');
+                         ->with('success', 'Relasi role-user berhasil dihapus.');
     }
 
-    // ========= PRIVATE METHODS =======
+    // ======================================================
+    // PROTECTED HELPER FUNCTIONS
+    // ======================================================
 
     // Validasi tambah user + role
-    private function validateNewUserRole(Request $request)
+    protected function validateNewUserRole(Request $request)
     {
         $rules = [
             'nama' => 'required|string|min:3|max:100',
@@ -107,7 +125,7 @@ class RoleUserController extends Controller
     }
 
     // Validasi edit user + role
-    private function validateEditUserRole(Request $request, $id)
+    protected function validateEditUserRole(Request $request, $id)
     {
         $roleUser = DB::table('role_user')->where('idrole_user', $id)->first();
 
@@ -119,11 +137,15 @@ class RoleUserController extends Controller
             'status' => 'required|in:aktif,nonaktif',
         ];
 
-        $request->validate($rules);
+        $messages = [
+            'status.in' => 'Status hanya boleh aktif atau nonaktif.',
+        ];
+
+        $request->validate($rules, $messages);
     }
 
     // Simpan user baru
-    private function createUser(Request $request)
+    protected function createUser(Request $request)
     {
         return DB::table('user')->insertGetId([
             'nama' => ucwords(strtolower(trim($request->nama))),
@@ -133,7 +155,7 @@ class RoleUserController extends Controller
     }
 
     // Simpan relasi role-user baru
-    private function createRoleUser(Request $request, $userId)
+    protected function createRoleUser(Request $request, $userId)
     {
         $status = $request->status === 'aktif' ? 1 : 0;
 
@@ -144,15 +166,13 @@ class RoleUserController extends Controller
         ]);
     }
 
-    // Update data user & relasi role-user
-    private function updateUserAndRole(Request $request, $id)
+    // Update data user dan relasinya
+    protected function updateUserAndRole(Request $request, $id)
     {
         $status = $request->status === 'aktif' ? 1 : 0;
-
         $roleUser = DB::table('role_user')->where('idrole_user', $id)->first();
 
         if ($roleUser) {
-            // Update user
             $updateUser = [
                 'nama' => ucwords(strtolower(trim($request->nama))),
                 'email' => strtolower(trim($request->email)),
@@ -164,7 +184,6 @@ class RoleUserController extends Controller
 
             DB::table('user')->where('iduser', $roleUser->iduser)->update($updateUser);
 
-            // Update relasi role
             DB::table('role_user')->where('idrole_user', $id)->update([
                 'idrole' => $request->idrole,
                 'status' => $status,

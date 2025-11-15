@@ -1,9 +1,9 @@
-@extends('layout.Dashboard')
+@extends('layouts.lte.main')
 
 @section('title', 'Edit Kode Tindakan | RSHP UNAIR')
 
 @section('content')
-<section class="py-5" style="background-color:#fffaf5;">
+<section class="py-5" style="background-color:#fffff;">
   <div class="container" style="max-width:700px;">
     <div class="card shadow p-4 rounded-4">
       <h3 class="fw-bold text-center mb-4 text-primary">Edit Kode Tindakan 💉</h3>
@@ -13,7 +13,7 @@
 
         <div class="mb-3">
           <label class="form-label fw-semibold">Kode</label>
-          <input type="text" name="kode" value="{{ $data->kode }}" class="form-control" required>
+          <input type="text" name="kode" value="{{ $data->kode }}" class="form-control" disabled>
         </div>
 
         <div class="mb-3">

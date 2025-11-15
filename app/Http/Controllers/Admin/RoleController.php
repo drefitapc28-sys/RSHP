@@ -8,58 +8,68 @@ use Illuminate\Support\Facades\DB;
 
 class RoleController extends Controller
 {
-    // ========= INDEX =======
+    // ===============================
+    // INDEX - Menampilkan semua role
+    // ===============================
     public function index()
     {
-        $data = DB::table('role')->orderBy('idrole', 'ASC')->get();
-        return view('Admin.Role.index', compact('data'));
+        $roles = DB::table('role')
+            ->orderBy('idrole', 'ASC')
+            ->get();
+
+        return view('Admin.Role.index', compact('roles'));
     }
 
-    // ========= CREATE =======
+    // ===============================
+    // CREATE - Form tambah role
+    // ===============================
     public function create()
     {
         return view('Admin.Role.create');
     }
 
-    // ======== STORE =======
+    // ===============================
+    // STORE - Simpan role baru
+    // ===============================
     public function store(Request $request)
     {
-        // Validasi input
         $this->validateRole($request);
-
-        // Simpan data
         $this->createRole($request);
 
         return redirect()->route('admin.role.index')
                          ->with('success', 'Role berhasil ditambahkan!');
     }
 
-    // ======== EDIT =======
+    // ===============================
+    // EDIT - Form edit role
+    // ===============================
     public function edit($id)
     {
         $role = DB::table('role')->where('idrole', $id)->first();
 
         if (!$role) {
-            return redirect()->route('admin.role.index')->with('error', 'Data role tidak ditemukan.');
+            return redirect()->route('admin.role.index')
+                             ->with('error', 'Data role tidak ditemukan.');
         }
 
         return view('Admin.Role.edit', compact('role'));
     }
 
-    // ======= UPDATE =======
+    // ===============================
+    // UPDATE - Perbarui role
+    // ===============================
     public function update(Request $request, $id)
     {
-        // Validasi input
         $this->validateRole($request, $id);
-
-        // Update data
         $this->updateRole($request, $id);
 
         return redirect()->route('admin.role.index')
                          ->with('success', 'Role berhasil diperbarui!');
     }
 
-    // ======= DESTROY =======
+    // ===============================
+    // DESTROY - Hapus role
+    // ===============================
     public function destroy($id)
     {
         DB::table('role')->where('idrole', $id)->delete();
@@ -68,21 +78,24 @@ class RoleController extends Controller
                          ->with('success', 'Role berhasil dihapus!');
     }
 
-    // ======== PRIVATE HELPERS =======
+    // ======================================================
+    // PROTECTED HELPER FUNCTIONS
+    // ======================================================
 
     // Validasi data role
-    private function validateRole(Request $request, $id = null)
+    protected function validateRole(Request $request, $id = null)
     {
         $rules = [
-        'nama_role' => [
-            'required',
-            'string',
-            'min:2',
-            'max:100',
-            'unique:role,nama_role,' . $id . ',idrole',
-            'regex:/^[A-Za-z\s]+$/'
-        ],
-    ];
+            'nama_role' => [
+                'required',
+                'string',
+                'min:2',
+                'max:100',
+                'unique:role,nama_role,' . $id . ',idrole',
+                'regex:/^[A-Za-z\s]+$/'
+            ],
+        ];
+
         $messages = [
             'nama_role.required' => 'Nama role wajib diisi.',
             'nama_role.string' => 'Nama role harus berupa teks.',
@@ -95,24 +108,24 @@ class RoleController extends Controller
         $request->validate($rules, $messages);
     }
 
-    // Helper: Simpan role baru
-    private function createRole(Request $request)
+    // Simpan role baru
+    protected function createRole(Request $request)
     {
         DB::table('role')->insert([
             'nama_role' => $this->formatNamaRole($request->nama_role),
         ]);
     }
 
-    // Helper: Update role
-    private function updateRole(Request $request, $id)
+    // Update role
+    protected function updateRole(Request $request, $id)
     {
         DB::table('role')->where('idrole', $id)->update([
             'nama_role' => $this->formatNamaRole($request->nama_role),
         ]);
     }
 
-    // Helper: Format nama role (kapital di awal kata)
-    private function formatNamaRole($nama)
+    // Format nama role agar kapital di awal kata
+    protected function formatNamaRole($nama)
     {
         return ucwords(strtolower(trim($nama)));
     }

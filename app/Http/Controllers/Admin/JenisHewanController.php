@@ -8,51 +8,72 @@ use App\Http\Controllers\Controller;
 
 class JenisHewanController extends Controller
 {
-    // ======== INDEX =======
+    // =====================================
+    // INDEX → Menampilkan semua data
+    // =====================================
     public function index()
     {
-        $data = DB::table('jenis_hewan')->get();
-        return view('Admin.Jenis-hewan.index', compact('data'));
+        // Query Builder (sesuai modul)
+        $jenisHewan = DB::table('jenis_hewan')
+            ->select('idjenis_hewan', 'nama_jenis_hewan')
+            ->orderBy('idjenis_hewan', 'ASC')
+            ->get ();
+
+        return view('Admin.Jenis-hewan.index', compact('jenisHewan'));
     }
 
-    // ========= CREATE =======
+    // =====================================
+    // CREATE → Tampilkan form tambah
+    // =====================================
     public function create()
     {
         return view('Admin.Jenis-hewan.create');
     }
 
-    // ======== STORE =======
-    // Simpan data baru
+    // =====================================
+    // STORE → Simpan data baru
+    // =====================================
     public function store(Request $request)
     {
-        //  Validasi input menggunakan helper
+        // Validasi input menggunakan helper
         $this->validateJenisHewan($request);
 
-        //  Simpan data ke database menggunakan helper
-        $this->createJenisHewan($request->nama_jenis_hewan);
+        // Simpan data dengan helper
+        $this->createJenisHewan([
+            'nama_jenis_hewan' => $request->nama_jenis_hewan
+        ]);
 
-        //  Redirect dengan pesan sukses
         return redirect()->route('admin.jenis-hewan.index')
                          ->with('success', 'Jenis hewan berhasil ditambahkan!');
     }
 
-    // ========= EDIT =======
+    // =====================================
+    // EDIT → Form ubah data
+    // =====================================
     public function edit($id)
     {
         $jenisHewan = DB::table('jenis_hewan')->where('idjenis_hewan', $id)->first();
+
+        if (!$jenisHewan) {
+            return redirect()->route('admin.jenis-hewan.index')
+                             ->with('error', 'Data jenis hewan tidak ditemukan.');
+        }
+
         return view('Admin.Jenis-hewan.edit', compact('jenisHewan'));
     }
 
-    // ======== UPDATE =======
+    // =====================================
+    // UPDATE → Simpan perubahan data
+    // =====================================
     public function update(Request $request, $id)
     {
-        //  Validasi input (lewati nama yang sama)
+        // Validasi input (abaikan data lama untuk unik)
         $this->validateJenisHewan($request, $id);
 
-        // Format nama sebelum update
+        // Format nama
         $formattedNama = $this->formatNamaJenis($request->nama_jenis_hewan);
 
-        //  Update data
+        // Update data ke database
         DB::table('jenis_hewan')->where('idjenis_hewan', $id)->update([
             'nama_jenis_hewan' => $formattedNama,
         ]);
@@ -61,56 +82,68 @@ class JenisHewanController extends Controller
                          ->with('success', 'Jenis hewan berhasil diperbarui!');
     }
 
-    // ========= DELETE =======
+    // =====================================
+    // DESTROY → Hapus data
+    // =====================================
     public function destroy($id)
     {
         DB::table('jenis_hewan')->where('idjenis_hewan', $id)->delete();
+
         return redirect()->route('admin.jenis-hewan.index')
                          ->with('success', 'Jenis hewan berhasil dihapus!');
     }
 
-  
-    //  ======== PRIVATE HELPERS =======
+    // ======================================================
+    // PROTECTED HELPER FUNCTIONS 
+    // ======================================================
 
-    private function validateJenisHewan(Request $request, $id = null)
+    // Helper untuk validasi input jenis hewan
+    
+    protected function validateJenisHewan(Request $request, $id = null)
     {
-           $rules = [
-        'nama_jenis_hewan' => [
-            'required',
-            'string',
-            'min:2',
-            'max:100',
-            'unique:jenis_hewan,nama_jenis_hewan,' . $id . ',idjenis_hewan',
-            'regex:/^[A-Za-z\s]+$/'
-        ],
-    ];
+        $rules = [
+            'nama_jenis_hewan' => [
+                'required',
+                'string',
+                'min:2',
+                'max:100',
+                'regex:/^[A-Za-z\s]+$/',
+                'unique:jenis_hewan,nama_jenis_hewan,' . $id . ',idjenis_hewan',
+            ],
+        ];
 
-            $messages = [
+        $messages = [
             'nama_jenis_hewan.required' => 'Nama jenis hewan wajib diisi.',
             'nama_jenis_hewan.string' => 'Nama jenis hewan harus berupa teks.',
             'nama_jenis_hewan.min' => 'Nama jenis hewan minimal :min karakter.',
             'nama_jenis_hewan.max' => 'Nama jenis hewan maksimal :max karakter.',
             'nama_jenis_hewan.unique' => 'Nama jenis hewan sudah ada.',
             'nama_jenis_hewan.regex' => 'Nama jenis hewan hanya boleh berisi huruf dan spasi.',
-    ];
+        ];
 
         $request->validate($rules, $messages);
     }
 
-    // Fungsi helper untuk menyimpan data
-    private function createJenisHewan($nama)
-    {
-        $formattedNama = $this->formatNamaJenis($nama);
+    // Helper untuk menyimpan data baru
 
-        DB::table('jenis_hewan')->insert([
-            'nama_jenis_hewan' => $formattedNama,
-        ]);
+    protected function createJenisHewan(array $data)
+    {
+        try {
+            $jenisHewan = DB::table('jenis_hewan')->insert([
+                'nama_jenis_hewan' => $this->formatNamaJenis($data['nama_jenis_hewan']),
+            ]);
+        
+        return $jenisHewan;
+        } catch (\Exception $e) {
+            throw new \Exception('Gagal menyimpan data jenis hewan: ' . $e->getMessage());
+        }
     }
 
-    // Fungsi helper untuk format nama
-    private function formatNamaJenis($nama)
+    // Helper untuk memformat nama (kapital tiap kata)
+
+    protected function formatNamaJenis($nama)
     {
-        // Hilangkan spasi berlebih, ubah huruf kecil semua lalu kapital setiap kata
+        // Hilangkan spasi berlebih dan ubah kapital setiap kata
         return ucwords(strtolower(trim($nama)));
     }
 }
