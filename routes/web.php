@@ -15,7 +15,9 @@ use App\Http\Controllers\Admin\{
     PetController,
     PemilikController,
     RoleController,
-    RoleUserController
+    RoleUserController,
+    DokterController,
+    PerawatController
 };
 
 // ===================== ROLE DASHBOARD CONTROLLERS =====================
@@ -153,7 +155,31 @@ Route::middleware(['auth', 'isAdministrator'])->prefix('admin')->name('admin.')-
         Route::post('/role-user/update/{id}', 'update')->name('role-user.update');
         Route::delete('/role-user/delete/{id}', 'destroy')->name('role-user.delete');
     });
+
+        // dokter
+    Route::get('/dokter', [DokterController::class, 'index'])->name('dokter.index');
+    Route::get('/dokter/form', [DokterController::class, 'form'])->name('dokter.form');
+    Route::post('/dokter/store', [DokterController::class, 'store'])->name('dokter.store');
+
+    Route::get('/dokter/{id}/edit', [DokterController::class, 'edit'])->name('dokter.edit');
+    Route::post('/dokter/{id}/update', [DokterController::class, 'update'])->name('dokter.update');
+
+    Route::get('/dokter/{id}/delete', [DokterController::class, 'delete'])->name('dokter.delete');
+
+        // perawat
+    Route::get('/perawat', [PerawatController::class, 'index'])->name('perawat.index');
+    Route::get('/perawat/form', [PerawatController::class, 'form'])->name('perawat.form');
+    Route::post('/perawat/store', [PerawatController::class, 'store'])->name('perawat.store');
+
+    Route::get('/perawat/{id}/edit', [PerawatController::class, 'edit'])->name('perawat.edit');
+    Route::post('/perawat/{id}/update', [PerawatController::class, 'update'])->name('perawat.update');
+
+    Route::get('/perawat/{id}/delete', [PerawatController::class, 'delete'])->name('perawat.delete');
+
+
 });
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -168,6 +194,7 @@ Route::middleware(['auth', 'isDokter'])->group(function () {
     Route::post('dokter/rekam-medis/{id}/tindakan', [DokterRekamMedisController::class, 'storeTindakan'])->name('dokter.rekam.tindakan.store');
     Route::get('/dokter/pet', [DokterPetController::class, 'index'])->name('dokter.pet.index');
     Route::get('/dokter/pemilik', [DokterPemilikController::class, 'index'])->name('dokter.pemilik.index');
+    Route::get('/dokter/profil', [DashboardDokterController::class, 'profil'])->name('dokter.profil');
 });
 
 /*
@@ -183,6 +210,8 @@ Route::middleware(['auth', 'isPerawat'])->group(function () {
     Route::get('/perawat/rekam-medis/create', [RekamMedisController::class,'create'])->name('perawat.rekam-medis.create');
     Route::get('/perawat/rekam-medis/{id}', [RekamMedisController::class,'show'])->name('perawat.rekam-medis.show');
     Route::post('/perawat/rekam-medis/store', [RekamMedisController::class,'store'])->name('perawat.rekam-medis.store');
+    Route::get('/perawat/profil', [DashboardPerawatController::class, 'profil'])->name('perawat.profil');
+
 });
 
 /*

@@ -74,6 +74,7 @@ ul.menu li a:hover{
         <li><a href="{{ route('dokter.rekam.index') }}">Rekam Medis</a></li>
         <li><a href="{{ route('dokter.pemilik.index') }}">Data Pemilik</a></li>
         <li><a href="{{ route('dokter.pet.index') }}">Data Hewan</a></li>
+        <li><a href="{{ route('dokter.profil') }}">Data Saya</a></li>
     </ul>
 </section>
 </div>

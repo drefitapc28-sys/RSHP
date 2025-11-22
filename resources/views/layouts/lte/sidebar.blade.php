@@ -134,6 +134,38 @@
                     </ul>
                 </li>
 
+                {{-- TRANSAKSI --}}
+                <li class="nav-item {{ request()->is('admin/dokter*') || request()->is('admin/perawat*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-journal-text"></i>
+                        <p>
+                            Transaksi
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
+                    </a>
+
+                    <ul class="nav nav-treeview">
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.dokter.index') }}" 
+                            class="nav-link {{ request()->routeIs('admin.dokter.*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-person-badge-fill"></i>
+                                <p>Kelengkapan Data Dokter</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.perawat.index') }}" 
+                            class="nav-link {{ request()->routeIs('admin.perawat.*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-person-badge-fill"></i>
+                                <p>Kelengkapan Data Perawat</p>
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+
+
                 @endif
 
                 {{-- ================== LOGOUT ================== --}}

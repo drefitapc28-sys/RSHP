@@ -25,4 +25,23 @@ class DashboardPerawatController extends Controller
             'jumlahRekamMedis'  => $jumlahRekamMedis, 
         ]);
     }
+
+    public function profil()
+    {
+        $iduser = Auth::id(); // ambil id user yang login
+
+        $perawat = \DB::table('perawat')
+            ->join('user', 'user.iduser', '=', 'perawat.iduser')
+            ->where('perawat.iduser', $iduser)
+            ->select(
+                'perawat.*',
+                'user.nama',
+                'user.email'
+            )
+            ->first();
+
+        return view('perawat.profil', compact('perawat'));
+    }
+
+
 }
