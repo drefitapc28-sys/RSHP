@@ -40,4 +40,22 @@ class DashboardPemilikController extends Controller
         return view('pemilik.Pemilik_Dashboard', compact('userName', 'jumlahPet', 'jumlahReservasi', 'jumlahRekam'));
     }
 
+    public function profil()
+    {
+        $iduser = auth()->user()->iduser;
+
+        $pemilik = DB::table('pemilik')
+            ->join('user', 'user.iduser', '=', 'pemilik.iduser')
+            ->where('pemilik.iduser', $iduser)
+            ->select(
+                'pemilik.*',
+                'user.nama',
+                'user.email'
+            )
+            ->first();
+
+        return view('pemilik.profil', compact('pemilik'));
+    }
+
+
 }

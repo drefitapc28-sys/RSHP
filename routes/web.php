@@ -238,4 +238,5 @@ Route::middleware(['auth', 'isPemilik'])->group(function () {
     Route::get('/pemilik/reservasi', [PemilikReservasiController::class, 'index'])->name('pemilik.reservasi.index');
     Route::get('/pemilik/rekam-medis', [PemilikRekamMedisController::class, 'index'])->name('pemilik.rekam.index');
     Route::get('/pemilik/rekam-medis/{id}', [PemilikRekamMedisController::class, 'show'])->name('pemilik.rekam.show');
+    Route::get('/pemilik/profil', [DashboardPemilikController::class, 'profil'])->name('pemilik.profil');
 });

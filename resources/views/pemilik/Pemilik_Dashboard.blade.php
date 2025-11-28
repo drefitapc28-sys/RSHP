@@ -1,92 +1,115 @@
-@extends('layout.dashboard')
+@extends('layouts.lte.main')
 
 @section('title','Dashboard Pemilik')
 
+@section('page-title', 'Dashboard')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="#">Home</a></li>
+    <li class="breadcrumb-item active">Dashboard Pemilik</li>
+@endsection
+
 @section('content')
+
 <style>
-.section-box {
-    padding: 30px;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-}
+    .welcome-section { margin-top: 25px; }
 
-/* Card Statistik */
-.stats{
-    display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
-    gap:15px;
-    margin: 25px 0;
-}
-.card-stat {
-    background: linear-gradient(135deg,#ff85c1,#b983ff);
-    color: #fff;
-    padding:18px;
-    width:200px;
-    border-radius:12px;
-    text-align:center;
-    box-shadow:0 2px 8px rgba(0,0,0,0.15);
-}
-.card-stat h4 { 
-    font-size:22px; 
-    font-weight:700; 
-    margin:0; 
-}
-.card-stat p { 
-    margin:3px 0 0; 
-    font-size:14px; 
-}
+    .welcome-card {
+        background: linear-gradient(135deg, #1d4ed8, #1e3a8a) !important;
+        border: none !important;
+    }
 
-/* Menu Button */
-ul.menu {list-style:none;padding:0;margin:25px auto;max-width:380px;}
-ul.menu li{margin:10px 0;}
-ul.menu li a{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 12px;
-    text-decoration: none !important;
-    background: linear-gradient(135deg,#ff83b7,#b26cff);
-    color:#fff;
-    font-weight:bold;
-    border-radius:8px;
-    transition:0.3s;
-}
-ul.menu li a:hover{
-    background: linear-gradient(135deg,#ff4fa0,#923cff);
-    text-decoration: none;
-    transform: translateY(-2px);
-}
+    .welcome-card h2,
+    .welcome-card p {
+        color: white !important;
+    }
+
+    .small-box {
+        border-radius: 8px;
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+        color: white !important;
+        background: #1d4ed8 !important;
+    }
+
+    .small-box .icon {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 48px;
+        opacity: .25;
+    }
+
+    .menu-box a {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        background: #1d4ed8;
+        color: #fff !important;
+        text-align: center;
+        border-radius: 8px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        text-decoration: none;
+        transition: .2s;
+    }
+
+    .menu-box a:hover {
+        background: #183a9c;
+        transform: translateY(-2px);
+    }
 </style>
 
-
-<div class="container text-center mt-4">
-
-<h2 class="fw-bold">Halo, {{ $userName }} 👋</h2>
-<p class="text-muted mb-4">Selamat datang di Dashboard Pemilik RSHP</p>
-
-<div class="stats">
-    <div class="card-stat">
-        <h4>{{ $jumlahPet }}</h4>
-        <p>Hewan Saya</p>
-    </div>
-    <div class="card-stat">
-        <h4>{{ $jumlahReservasi }}</h4>
-        <p>Reservasi</p>
-    </div>
-    <div class="card-stat">
-        <h4>{{ $jumlahRekam }}</h4>
-        <p>Rekam Medis</p>
+<!-- Welcome -->
+<div class="row mb-4 welcome-section">
+    <div class="col-12">
+        <div class="card shadow-sm welcome-card" style="margin-left:10px; margin-right:10px;">
+            <div class="card-body py-4">
+                <h2 class="mb-1">Halo, {{ $userName }} 👋</h2>
+                <p class="mb-0">Selamat datang di Dashboard Pemilik RSHP</p>
+            </div>
+        </div>
     </div>
 </div>
 
-<ul class="menu">
-    <li><a href="{{ route('pemilik.pet.index') }}"> Daftar Pet</a></li>
-    <li><a href="{{ route('pemilik.reservasi.index') }}"> Daftar Reservasi</a></li>
-    <li><a href="{{ route('pemilik.rekam.index') }}"> Daftar Rekam Medis</a></li>
-</ul>
+<!-- Statistik -->
+<div class="row px-2">
 
+    <div class="col-lg-4 col-12 mb-3">
+        <div class="small-box shadow-sm">
+            <div class="inner">
+                <h3>{{ $jumlahPet ?? 0 }}</h3>
+                <p>Hewan Saya</p>
+            </div>
+            <div class="icon">
+                <i class="bi bi-bag-heart"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-12 mb-3">
+        <div class="small-box shadow-sm">
+            <div class="inner">
+                <h3>{{ $jumlahReservasi ?? 0 }}</h3>
+                <p>Total Reservasi</p>
+            </div>
+            <div class="icon">
+                <i class="bi bi-calendar-check"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-12 mb-3">
+        <div class="small-box shadow-sm">
+            <div class="inner">
+                <h3>{{ $jumlahRekam ?? 0 }}</h3>
+                <p>Rekam Medis</p>
+            </div>
+            <div class="icon">
+                <i class="bi bi-journal-medical"></i>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

@@ -1,46 +1,153 @@
-@extends('layout.dashboard')
+@extends('layouts.lte.main')
 
 @section('title', 'Detail Rekam Medis')
 
 @section('content')
-<div class="container">
 
-    <h3 class="mb-3 text-center">Detail Rekam Medis</h3>
+<style>
+.card {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin: 20px;
+}
+.card-header {
+    background: #3f51b5;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px 8px 0 0;
+}
+.card-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 500;
+}
+.card-body {
+    padding: 20px;
+}
+.info-group {
+    margin-bottom: 15px;
+}
+.info-group p {
+    margin: 8px 0;
+    font-size: 14px;
+    color: #555;
+}
+.info-group b {
+    color: #333;
+    font-weight: 600;
+    display: inline-block;
+    min-width: 150px;
+}
+.divider {
+    border: 0;
+    border-top: 1px solid #e0e0e0;
+    margin: 20px 0;
+}
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+thead {
+    background: #f5f5f5;
+    border-bottom: 2px solid #e0e0e0;
+}
+th {
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 14px;
+    color: #555;
+}
+tbody tr:hover {
+    background: #f9f9f9;
+}
+.text-center {
+    text-align: center;
+    padding: 20px;
+    color: #999;
+}
+.btn-back {
+    background: #757575;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    display: inline-block;
+    margin-top: 15px;
+}
+.btn-back:hover {
+    background: #616161;
+    color: white;
+}
+</style>
 
-    <div class="card p-3 mb-4">
-        <p><strong>Tanggal:</strong> {{ $rekam->created_at }}</p>
-        <p><strong>Dokter:</strong> {{ $rekam->nama_dokter }}</p>
-        <p><strong>Hewan:</strong> {{ $rekam->nama_pet }}</p>
-        <p><strong>Pemilik:</strong> {{ $rekam->nama_pemilik }}</p>
-        <p><strong>Anamnesa:</strong> {{ $rekam->anamnesa }}</p>
-        <p><strong>Temuan Klinis:</strong> {{ $rekam->temuan_klinis }}</p>
-        <p><strong>Diagnosa:</strong> {{ $rekam->diagnosa }}</p>
+<div class="card">
+    <div class="card-header">
+        <h3>📑 Detail Rekam Medis</h3>
     </div>
 
-    <h5>Daftar Tindakan/Terapi</h5>
-    <table class="table table-bordered bg-white">
-        <thead>
-            <tr>
-                <th>Kode</th>
-                <th>Deskripsi</th>
-                <th>Detail</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($detail as $d)
-                <tr>
-                    <td>{{ $d->kode }}</td>
-                    <td>{{ $d->deskripsi_tindakan_terapi }}</td>
-                    <td>{{ $d->detail }}</td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="3" class="text-center text-muted">Belum ada tindakan</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
+    <div class="card-body">
+        <div class="info-group">
+            <p><b>Tanggal:</b> {{ $rekam->created_at }}</p>
+            <p><b>Dokter:</b> {{ $rekam->nama_dokter }}</p>
+            <p><b>Hewan:</b> {{ $rekam->nama_pet }}</p>
+            <p><b>Pemilik:</b> {{ $rekam->nama_pemilik }}</p>
+        </div>
 
-    <a href="{{ route('perawat.rekam-medis.index') }}" class="btn btn-secondary">Kembali</a>
+        <hr class="divider">
+
+        <div class="info-group">
+            <p><b>Anamnesa:</b> {{ $rekam->anamnesa }}</p>
+            <p><b>Temuan Klinis:</b> {{ $rekam->temuan_klinis }}</p>
+            <p><b>Diagnosa:</b> {{ $rekam->diagnosa }}</p>
+        </div>
+
+        <hr class="divider">
+
+        <h5 class="section-title">Daftar Tindakan / Terapi</h5>
+
+        @if(count($detail) > 0)
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Kode</th>
+                        <th>Deskripsi</th>
+                        <th>Detail</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($detail as $index => $d)
+                    <tr>
+                        <td>{{ $index + 1 }}</td>
+                        <td>{{ $d->kode }}</td>
+                        <td>{{ $d->deskripsi_tindakan_terapi }}</td>
+                        <td>{{ $d->detail }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @else
+            <p class="text-center">Belum ada tindakan/terapi.</p>
+        @endif
+
+        <a href="{{ route('perawat.rekam-medis.index') }}" class="btn-back">⬅ Kembali</a>
+    </div>
 </div>
+
 @endsection

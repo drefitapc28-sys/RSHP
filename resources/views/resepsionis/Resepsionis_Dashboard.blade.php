@@ -1,100 +1,113 @@
-@extends('layout.dashboard')
+@extends('layouts.lte.main')
 
-@section('title', 'Dashboard Resepsionis | RSHP Universitas Airlangga')
+@section('title', 'Dashboard Resepsionis')
+
+@section('page-title', 'Dashboard')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="#">Home</a></li>
+    <li class="breadcrumb-item active">Dashboard</li>
+@endsection
 
 @section('content')
+
+{{-- Style khusus dashboard --}}
 <style>
-    section {
-        padding: 25px;
-        margin-top: 30px;
-        background-color: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    .welcome-section { margin-top: 25px; }
+
+    .welcome-card {
+        background: linear-gradient(135deg, #3b82f6, #1e40af) !important;
+        border: none !important;
     }
-    h2 {
-        color: #333;
-        text-align: center;
-        font-weight: 700;
+
+    .welcome-card h2,
+    .welcome-card p {
+        color: white !important;
     }
-    .stats {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 15px;
-        margin: 20px 0;
+
+    .card-header {
+        background: #3b82f6 !important;
+        color: white !important;
     }
-    .card-stat {
-        background: linear-gradient(135deg, #1979ef, #74b9ff);
-        color: white;
-        padding: 20px;
-        border-radius: 10px;
-        width: 200px;
-        text-align: center;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-    }
-    .card-stat h4 {
-        font-size: 20px;
-        margin-bottom: 5px;
-        font-weight: bold;
-    }
-    .card-stat p {
-        font-size: 14px;
-        margin: 0;
-    }
-    ul.menu {
-        list-style: none;
-        padding: 0;
-        margin: 30px auto;
-        max-width: 400px;
-    }
-    ul.menu li {
-        margin: 12px 0;
-    }
-    ul.menu li a {
-        display: block;
-        padding: 12px;
-        text-align: center;
-        background: #1979ef;
-        color: white;
-        font-weight: bold;
+
+    /* samakan small-box admin */
+    .small-box {
         border-radius: 8px;
-        text-decoration: none;
-        transition: background 0.2s ease-in-out;
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
     }
-    ul.menu li a:hover {
-        background: #0c53a7;
+
+    .small-box .icon {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 50px;
+        opacity: .25;
+    }
+
+    .small-box .inner h3 {
+        font-size: 32px;
+        font-weight: bold;
+    }
+
+    .small-box .inner p {
+        margin-bottom: 0;
+        font-size: 16px;
     }
 </style>
 
-<div class="container">
-    <section>
-        <h2>Halo, {{ $userName }} 👋</h2>
-        <p class="text-center text-muted">Selamat datang di Dashboard Resepsionis RSHP Universitas Airlangga</p>
-
-        {{-- Statistik singkat --}}
-        <div class="stats">
-            <div class="card-stat">
-                <h4>{{ $jumlahPemilik }}</h4>
-                <p>Total Pemilik</p>
-            </div>
-            <div class="card-stat">
-                <h4>{{ $jumlahPet }}</h4>
-                <p>Hewan Terdaftar</p>
-            </div>
-            <div class="card-stat">
-                <h4>{{ $jumlahTemu }}</h4>
-                <p>Temu Dokter</p>
+<!-- Welcome Section -->
+<div class="row mb-4 welcome-section">
+    <div class="col-12">
+        <div class="card shadow-sm welcome-card" style="margin-left:10px; margin-right:10px;">
+            <div class="card-body py-4">
+                <h2 class="mb-1">Halo, {{ Auth::user()->nama ?? 'Resepsionis' }} 👋</h2>
+                <p class="mb-0 text-light">Selamat datang di Sistem Manajemen Rumah Sakit Hewan.</p>
             </div>
         </div>
-
-        <p style="text-align:center; margin-top:25px;">Silakan pilih menu untuk mengelola data:</p>
-
-        {{-- Menu Navigasi --}}
-        <ul class="menu">
-            <li><a href="{{ route('resepsionis.pemilik.index') }}"><class="btn btn-warning"> Data Pemilik</a></li>
-            <li><a href="{{ route('resepsionis.pet.index') }}"> <class="btn btn-info"> Data Hewan</a></li>
-            <li><a href="{{ route('resepsionis.temu-dokter') }}" class="btn btn-primary">Daftar Temu Dokter</a></li>
-        </ul>
-    </section>
+    </div>
 </div>
+
+<!-- Info Boxes -->
+<div class="row px-2">
+
+    <div class="col-lg-3 col-6 mb-3">
+        <div class="small-box shadow-sm" style="background:#3b82f6;">
+            <div class="inner text-white">
+                <h3>{{ $jumlahPet ?? 0 }}</h3>
+                <p>Total Hewan Terdaftar</p>
+            </div>
+            <div class="icon">
+                <i class="bi bi-heart"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-6 mb-3">
+        <div class="small-box shadow-sm" style="background:#1e40af;">
+            <div class="inner text-white">
+                <h3>{{ $jumlahPemilik ?? 0 }}</h3>
+                <p>Total Pemilik Hewan</p>
+            </div>
+            <div class="icon">
+                <i class="bi bi-person"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-6 mb-3">
+        <div class="small-box shadow-sm" style="background:#2563eb;">
+            <div class="inner text-white">
+                <h3>{{ $jumlahTemu ?? 0 }}</h3>
+                <p>Total Temu Dokter</p>
+            </div>
+            <div class="icon">
+                <i class="bi bi-calendar-check"></i>
+            </div>
+        </div>
+    </div>
+
+</div>
+
 @endsection

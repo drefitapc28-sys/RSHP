@@ -1,84 +1,113 @@
-@extends('layout.dashboard')
+@extends('layouts.lte.main')
 
-@section('title','Daftar Reservasi')
+@section('title', 'Daftar Reservasi')
 
 @section('content')
 
 <style>
-.container-box {
-    max-width: 900px;
-    margin: 20px auto;
-    background: #fff;
-    padding: 20px;
+.card {
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin: 20px;
 }
-
-h2 { text-align:center; color:#333; margin-bottom:20px; }
-
+.card-header {
+    background: #3f51b5;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px 8px 0 0;
+}
+.card-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 500;
+}
+.card-body {
+    padding: 0;
+}
 table {
-    width:100%;
-    border-collapse:collapse;
-    background:white;
-    margin-top:10px;
+    width: 100%;
+    border-collapse: collapse;
 }
-th, td {
-    border:1px solid #ccc;
-    padding:10px;
-    text-align:center;
+thead {
+    background: #f5f5f5;
+    border-bottom: 2px solid #e0e0e0;
 }
 th {
-    background: #ff83b7;
-    color:white;
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
 }
-tr:nth-child(even){
-    background:#f9f9f9;
+td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 14px;
+    color: #555;
+}
+tbody tr:hover {
+    background: #f9f9f9;
 }
 .status {
-    font-weight:bold;
+    font-weight: 600;
+}
+.status-selesai {
+    color: #4caf50;
+}
+.status-menunggu {
+    color: #ff9800;
+}
+.text-center {
+    text-align: center;
+    padding: 30px;
+    color: #999;
 }
 </style>
 
-<div class="container-box">
-    <h2>📋 Daftar Reservasi Hewan Saya</h2>
+<div class="card">
+    <div class="card-header">
+        <h3>📋 Daftar Reservasi Hewan Saya</h3>
+    </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>No Urut</th>
-                <th>Nama Pet</th>
-                <th>Dokter Pemeriksa</th>
-                <th>Tanggal Daftar</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-
-        <tbody>
+    <div class="card-body">
         @if(count($reservasi) > 0)
-            @foreach ($reservasi as $r)
-            <tr>
-                <td>{{ $r->no_urut }}</td>
-                <td>{{ $r->nama_pet }}</td>
-                <td>{{ $r->nama_dokter }}</td>
-                <td>{{ $r->waktu_daftar }}</td>
-                <td class="status">
-                    @if($r->status == 'Y')
-                        ✅ Selesai
-                    @elseif($r->status == 'N')
-                        ⏳ Menunggu
-                    @else
-                        - 
-                    @endif
-                </td>
-            </tr>
-            @endforeach
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>No Urut</th>
+                        <th>Nama Pet</th>
+                        <th>Dokter Pemeriksa</th>
+                        <th>Tanggal Daftar</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($reservasi as $index => $r)
+                    <tr>
+                        <td>{{ $index + 1 }}</td>
+                        <td>{{ $r->no_urut }}</td>
+                        <td>{{ $r->nama_pet }}</td>
+                        <td>{{ $r->nama_dokter }}</td>
+                        <td>{{ $r->waktu_daftar }}</td>
+                        <td class="status">
+                            @if($r->status == 'Y')
+                                <span class="status-selesai">✅ Selesai</span>
+                            @elseif($r->status == 'N')
+                                <span class="status-menunggu">⏳ Menunggu</span>
+                            @else
+                                -
+                            @endif
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
         @else
-            <tr>
-                <td colspan="5">Belum ada reservasi untuk hewan Anda.</td>
-            </tr>
+            <p class="text-center">Belum ada reservasi untuk hewan Anda.</p>
         @endif
-        </tbody>
-    </table>
+    </div>
 </div>
 
 @endsection

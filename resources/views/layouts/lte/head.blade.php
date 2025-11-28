@@ -59,4 +59,67 @@
         integrity="sha256-uIeLmTK0Qrb+Z6kDYS/NRshKsONXFHUblf029/o4="
         crossorigin="anonymous"
     />
+
+        <!-- Custom Theme Colors -->
+    <style>
+        :root {
+            --primary-blue: #003ad9ff;
+            --dark-blue: #132c71ff;
+            --soft-yellow: #facc15;
+            --body-bg: #f8fafc;
+        }
+
+        body {
+            background: var(--body-bg) !important;
+        }
+
+        .navbar {
+            background: var(--primary-blue) !important;
+            color: white !important;
+        }
+
+        .app-sidebar {
+            background: var(--dark-blue) !important;
+        }
+
+        .app-sidebar .nav-link.active {
+            background: var(--soft-yellow) !important;
+            color: black !important;
+        }
+
+        .app-footer {
+            background: var(--primary-blue) !important;
+            color: white !important;
+        }
+
+        .card-header {
+            background: var(--primary-blue) !important;
+            color: white !important;
+        }
+
+        /* Warna teks navbar menjadi putih */
+        .app-header.navbar .nav-link,
+        .app-header.navbar .navbar-nav .nav-link,
+        .app-header.navbar .dropdown-item-title,
+        .app-header.navbar .navbar-badge {
+            color: #ffffff !important;
+        }
+
+        /* Icon dalam navbar juga putih */
+        .app-header.navbar i {
+            color: #ffffff !important;
+        }
+
+        /* Link dropdown tetap rapi */
+        .dropdown-menu .dropdown-item {
+            color: #000 !important; /* isi dropdown tetap gelap biar terbaca */
+        }
+
+        /* Background navbar biar sesuai tema biru–kuning (biru tua misalnya) */
+        .app-header.navbar {
+            background: #0056b3 !important;  /* biru tua */
+            border-bottom: 3px solid #ffcc00; /* garis bawah kuning */
+        }
+    </style>
+
 </head>

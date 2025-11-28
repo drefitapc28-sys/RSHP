@@ -1,6 +1,6 @@
 @extends('layouts.lte.main')
 
-@section('title', 'Profil Dokter')
+@section('title', 'Profil Pemilik')
 
 @section('content')
 
@@ -47,38 +47,33 @@
 
 <div class="card">
     <div class="card-header">
-        <h3>👨‍⚕️ Profil Dokter</h3>
+        <h3>👤 Profil Pemilik</h3>
     </div>
 
     <div class="card-body">
         <div class="profile-item">
             <span class="profile-label">Nama:</span>
-            <span class="profile-value">{{ $dokter->nama }}</span>
+            <span class="profile-value">{{ $pemilik->nama }}</span>
         </div>
 
         <div class="profile-item">
             <span class="profile-label">Email:</span>
-            <span class="profile-value">{{ $dokter->email }}</span>
+            <span class="profile-value">{{ $pemilik->email }}</span>
         </div>
 
         <div class="profile-item">
             <span class="profile-label">Alamat:</span>
-            <span class="profile-value">{{ $dokter->alamat }}</span>
+            <span class="profile-value">{{ $pemilik->alamat }}</span>
         </div>
 
         <div class="profile-item">
-            <span class="profile-label">No. HP:</span>
-            <span class="profile-value">{{ $dokter->no_hp }}</span>
+            <span class="profile-label">No HP:</span>
+            <span class="profile-value">{{ $pemilik->no_wa }}</span>
         </div>
 
         <div class="profile-item">
-            <span class="profile-label">Bidang:</span>
-            <span class="profile-value">{{ $dokter->bidang_dokter ?? '-' }}</span>
-        </div>
-
-        <div class="profile-item">
-            <span class="profile-label">Jenis Kelamin:</span>
-            <span class="profile-value">{{ $dokter->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</span>
+            <span class="profile-label">Tanggal Lahir:</span>
+            <span class="profile-value">{{ $pemilik->tanggal_lahir ?? '-' }}</span>
         </div>
     </div>
 </div>
