@@ -40,9 +40,11 @@
                                 <tr>
                                     <th style="width: 50px">No</th>
                                     <th>Nama Hewan</th>
-                                    <th>Ras</th>
-                                    <th>Pemilik</th>
+                                    <th>Tanggal Lahir</th>
+                                    <th>Warna/Tanda</th>
                                     <th>Jenis Kelamin</th>
+                                    <th>Pemilik</th>
+                                    <th>Ras</th>
                                     <th style="width: 150px">Aksi</th>
                                 </tr>
                             </thead>
@@ -52,17 +54,19 @@
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
                                     <td>{{ $pet->nama }}</td>
-                                    <td>{{ $pet->nama_ras ?? '-' }}</td>
-                                    <td>{{ $pet->nama_pemilik ?? '-' }}</td>
+                                    <td>{{ $pet->tanggal_lahir ? \Carbon\Carbon::parse($pet->tanggal_lahir)->format('d/m/Y') : '-' }}</td>
+                                    <td>{{ $pet->warna_tanda ?? '-' }}</td>
                                     <td>
                                         @if ($pet->jenis_kelamin == 'L')
-                                            Jantan
+                                            Jantan ♂
                                         @elseif ($pet->jenis_kelamin == 'P')
-                                            Betina
+                                            Betina ♀
                                         @else
                                             -
                                         @endif
                                     </td>
+                                    <td>{{ $pet->nama_pemilik ?? '-' }}</td>
+                                    <td>{{ $pet->nama_ras ?? '-' }}</td>
 
                                     <td>
                                         <a href="{{ route('admin.pet.edit', $pet->idpet) }}"

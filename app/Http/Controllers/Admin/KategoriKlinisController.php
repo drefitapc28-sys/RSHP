@@ -64,7 +64,7 @@ class KategoriKlinisController extends Controller
         $this->validateKategoriKlinis($request, $id);
 
         DB::table('kategori_klinis')->where('idkategori_klinis', $id)->update([
-            'nama_kategori_klinis' => $this->formatNamaKlinis($request->nama_kategori_klinis),
+            'nama_kategori_klinis' => $this->formatNamaKategoriKlinis($request->nama_kategori_klinis),
         ]);
 
         return redirect()->route('admin.kategori-klinis.index')
