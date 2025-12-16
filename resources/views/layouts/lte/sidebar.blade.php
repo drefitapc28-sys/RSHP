@@ -101,7 +101,7 @@
                     </li>
 
                     {{-- USER MANAGEMENT --}}
-                    <li class="nav-item {{ request()->is('admin/role*') || request()->is('admin/role-user*') ? 'menu-open' : '' }}">
+                    <li class="nav-item {{ request()->is('admin/role*') || request()->is('admin/role_user*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-shield-lock-fill"></i>
                             <p>User Management <i class="nav-arrow bi bi-chevron-right"></i></p>
@@ -118,10 +118,19 @@
                             </li>
 
                             <li class="nav-item">
-                                <a href="{{ route('admin.role-user.index') }}"
-                                   class="nav-link {{ request()->routeIs('admin.role-user.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.user.index') }}"
+                                   class="nav-link {{ request()->routeIs('admin.user.*') ? 'active' : '' }}">
                                     <i class="nav-icon bi bi-circle"></i>
                                     <p>User</p>
+                                </a>
+                            </li>
+
+
+                            <li class="nav-item">
+                                <a href="{{ route('admin.role_user.index') }}"
+                                   class="nav-link {{ request()->routeIs('admin.role_user.*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>Role User</p>
                                 </a>
                             </li>
 
@@ -273,8 +282,8 @@
                     </li>
 
                     <li class="nav-item">
-                        <a href="{{ route('resepsionis.temu-dokter') }}" 
-                        class="nav-link {{ request()->routeIs('resepsionis.temu-dokter') ? 'active' : '' }}">
+                        <a href="{{ route('resepsionis.temu-dokter.index') }}" 
+                        class="nav-link {{ request()->routeIs('resepsionis.temu-dokter.index') ? 'active' : '' }}">
                             <i class="nav-icon bi bi-calendar-check"></i>
                             Temu Dokter
                         </a>

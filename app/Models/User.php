@@ -10,14 +10,14 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    // ✅ Laravel default-nya mencari tabel "users"
+    // Laravel default-nya mencari tabel "users"
     // Tapi tabel kamu bernama "user", jadi kita ubah manual
     protected $table = 'user';
 
-    // ✅ Kalau primary key kamu "iduser", ubah di sini
+    // Kalau primary key kamu "iduser", ubah di sini
     protected $primaryKey = 'iduser';
 
-    // ✅ Jika kolom tidak auto increment atau bukan integer, bisa diset juga
+    // Jika kolom tidak auto increment atau bukan integer, bisa diset juga
     public $incrementing = true;
     protected $keyType = 'int';
 
@@ -40,13 +40,13 @@ class User extends Authenticatable
         ];
     }
 
-    // ✅ Relasi dengan tabel Pemilik
+    // Relasi dengan tabel Pemilik
     public function pemilik()
     {
         return $this->hasOne(Pemilik::class, 'iduser', 'iduser');
     }
 
-    // ✅ Relasi dengan RoleUser
+    // Relasi dengan RoleUser
     public function roleUser()
     {
         return $this->hasMany(RoleUser::class, 'iduser', 'iduser');

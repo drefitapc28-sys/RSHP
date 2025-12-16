@@ -1,6 +1,6 @@
 @extends('layouts.lte.main')
 
-@section('title','Detail Rekam Medis')
+@section('title', 'Detail Rekam Medis')
 
 @section('content')
 
@@ -22,120 +22,215 @@
     font-weight: 500;
 }
 .card-body {
-    padding: 0;
+    padding: 20px;
 }
-/* area info di atas tabel */
-.info {
-    padding: 15px 20px;
+.info-group {
+    margin-bottom: 15px;
+}
+.info-group p {
+    margin: 8px 0;
     font-size: 14px;
-    color: #444;
+    color: #555;
 }
-.info p { margin: 6px 0; }
-
-/* tabel style seperti contoh daftar */
-.table-wrapper {
-    padding: 0 20px 20px 20px; /* jarak antara header/info dan tabel */
+.info-group b {
+    color: #333;
+    font-weight: 600;
+    display: inline-block;
+    min-width: 150px;
 }
-table.custom-table {
+.divider {
+    border: 0;
+    border-top: 1px solid #e0e0e0;
+    margin: 20px 0;
+}
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+}
+table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 8px;
+    margin-top: 10px;
 }
-table.custom-table thead {
+thead {
     background: #f5f5f5;
     border-bottom: 2px solid #e0e0e0;
 }
-table.custom-table th {
+th {
     padding: 12px 15px;
     text-align: left;
     font-weight: 600;
     color: #333;
     font-size: 14px;
 }
-table.custom-table td {
+td {
     padding: 12px 15px;
     text-align: left;
     border-bottom: 1px solid #e0e0e0;
     font-size: 14px;
     color: #555;
 }
-table.custom-table tbody tr:hover {
+tbody tr:hover {
     background: #f9f9f9;
 }
-.form-area {
-    padding: 0 20px 20px 20px;
+.text-center {
+    text-align: center;
+    padding: 20px;
+    color: #999;
+}
+.form-group {
+    margin-bottom: 15px;
+}
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+.form-control {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #555;
+    transition: border-color 0.3s;
+}
+.form-control:focus {
+    outline: none;
+    border-color: #3f51b5;
+    box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.1);
+}
+textarea.form-control {
+    min-height: 80px;
+    resize: vertical;
+}
+select.form-control {
+    cursor: pointer;
+}
+.btn-success {
+    background: #4caf50;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+.btn-success:hover {
+    background: #45a049;
+}
+.btn-back {
+    background: #757575;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    display: inline-block;
+    margin-top: 10px;
+}
+.btn-back:hover {
+    background: #616161;
+    color: white;
+}
+.status-completed {
+    background: #d4edda;
+    color: #155724;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-block;
+    margin-bottom: 15px;
 }
 </style>
 
-<div class="container">
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Detail Rekam Medis</h3>
+<div class="card">
+    <div class="card-header">
+        <h3>📑 Detail Rekam Medis</h3>
+    </div>
+
+    <div class="card-body">
+        @if($rekam->diagnosa && $rekam->diagnosa != '-')
+            <div class="status-completed">✓ Rekam Medis Sudah Selesai</div>
+        @endif
+
+        <div class="info-group">
+            <p><b>ID:</b> {{ $rekam->idrekam_medis }}</p>
+            <p><b>Tanggal:</b> {{ $rekam->created_at }}</p>
+            <p><b>Hewan:</b> {{ $rekam->nama_pet }}</p>
+            <p><b>Pemilik:</b> {{ $rekam->nama_pemilik }}</p>
         </div>
 
-        <div class="card-body">
-            <div class="info">
-                <p><b>ID:</b> {{ $rekam->idrekam_medis }}</p>
-                <p><b>Tanggal:</b> {{ $rekam->created_at }}</p>
-                <p><b>Hewan:</b> {{ $rekam->nama_pet }}</p>
-                <p><b>Pemilik:</b> {{ $rekam->nama_pemilik }}</p>
-                <p><b>Anamnesa:</b> {{ $rekam->anamnesa }}</p>
-                <p><b>Temuan Klinis:</b> {{ $rekam->temuan_klinis }}</p>
-                <p><b>Diagnosa:</b> {{ $rekam->diagnosa }}</p>
-            </div>
+        <hr class="divider">
 
-            <hr style="margin:0;">
+        <div class="info-group">
+            <p><b>Anamnesa:</b> {{ $rekam->anamnesa }}</p>
+            <p><b>Temuan Klinis:</b> {{ $rekam->temuan_klinis }}</p>
+            <p><b>Diagnosa:</b> {{ $rekam->diagnosa }}</p>
+        </div>
 
-            <div class="table-wrapper">
-                <h5 style="margin:12px 0 8px 0">Tindakan / Terapi</h5>
+        <hr class="divider">
 
-                <table class="custom-table">
-                    <thead>
-                        <tr>
-                            <th>Kode</th>
-                            <th>Deskripsi</th>
-                            <th>Detail</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($detail as $d)
-                        <tr>
-                            <td>{{ $d->kode }}</td>
-                            <td>{{ $d->deskripsi_tindakan_terapi }}</td>
-                            <td>{{ $d->detail }}</td>
-                        </tr>
-                        @endforeach
-                        @if(count($detail) == 0)
-                        <tr>
-                            <td colspan="3" class="text-center" style="padding:12px 15px;color:#999">Belum ada tindakan/terapi.</td>
-                        </tr>
-                        @endif
-                    </tbody>
-                </table>
-            </div>
+        <h5 class="section-title">Daftar Tindakan / Terapi</h5>
 
-            <div class="form-area">
-                <form action="{{ route('dokter.rekam.addTerapi', $rekam->idrekam_medis) }}" method="post" class="mt-3">
-                    @csrf
-                    <div class="form-group">
-                        <label>Kode Tindakan:</label>
-                        <select name="idkode_tindakan_terapi" class="form-control form-control-sm mb-2" required>
-                            <option value="">-- Pilih Kode --</option>
-                            @foreach($kode as $k)
+        @if(count($detail) > 0)
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Kode</th>
+                        <th>Deskripsi</th>
+                        <th>Detail</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($detail as $index => $d)
+                    <tr>
+                        <td>{{ $index + 1 }}</td>
+                        <td>{{ $d->kode }}</td>
+                        <td>{{ $d->deskripsi_tindakan_terapi }}</td>
+                        <td>{{ $d->detail }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @else
+            <p class="text-center">Belum ada tindakan/terapi.</p>
+        @endif
+
+        @if(!$rekam->diagnosa || $rekam->diagnosa == '-')
+            <hr class="divider">
+
+            <h5 class="section-title">Tambah Tindakan / Terapi</h5>
+
+            <form action="{{ route('dokter.rekam.addTerapi', $rekam->idrekam_medis) }}" method="post">
+                @csrf
+                <div class="form-group">
+                    <label class="form-label">Kode Tindakan</label>
+                    <select name="idkode_tindakan_terapi" class="form-control" required>
+                        <option value="">-- Pilih Kode --</option>
+                        @foreach($kode as $k)
                             <option value="{{ $k->idkode_tindakan_terapi }}">{{ $k->kode }} - {{ $k->deskripsi_tindakan_terapi }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                        @endforeach
+                    </select>
+                </div>
 
-                    <div class="form-group">
-                        <label>Detail:</label>
-                        <textarea name="detail" class="form-control form-control-sm mb-2"></textarea>
-                    </div>
+                <div class="form-group">
+                    <label class="form-label">Detail</label>
+                    <textarea name="detail" class="form-control" placeholder="Masukkan detail tindakan/terapi..."></textarea>
+                </div>
 
-                    <button class="btn btn-success btn-sm">Tambah Terapi</button>
-                </form>
-            </div>
-        </div>
+                <button type="submit" class="btn-success">💾 Tambah Terapi</button>
+            </form>
+        @endif
+
+        <a href="{{ route('dokter.rekam.index') }}" class="btn-back">⬅ Kembali</a>
     </div>
 </div>
+
 @endsection

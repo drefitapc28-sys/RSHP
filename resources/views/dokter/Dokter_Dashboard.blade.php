@@ -114,7 +114,7 @@
     <div class="col-lg-3 col-6 mb-3">
         <div class="small-box shadow-sm">
             <div class="inner">
-                <h3>{{ $jumlahTemu ?? 0 }}</h3>
+                <h3>{{ $jumlahtemu ?? 0 }}</h3>
                 <p>Jadwal Temu</p>
             </div>
             <div class="icon">

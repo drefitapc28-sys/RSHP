@@ -43,23 +43,22 @@ class DokterRekamMedisController extends Controller
         return view('dokter.rekam.show', compact('rekam', 'detail', 'kode'));
     }
 
-    public function addTerapi($id)
+    public function addTerapi(Request $request, $id)
     {
-        request()->validate([
+        $request->validate([
             'idkode_tindakan_terapi' => 'required',
-            'detail' => 'nullable|string'
+            'detail' => 'nullable',
         ]);
 
-        DB::table('detail_rekam')->insert([
+        DB::table('detail_rekam_medis')->insert([
             'idrekam_medis' => $id,
-            'idkode_tindakan_terapi' => request('idkode_tindakan_terapi'),
-            'detail' => request('detail'),
-            'created_at' => now(),
-            'updated_at' => now(),
+            'idkode_tindakan_terapi' => $request->idkode_tindakan_terapi,
+            'detail' => $request->detail,
         ]);
 
-        return redirect()->back()->with('success', 'Tindakan / terapi berhasil ditambahkan!');
+        return back()->with('success', 'Terapi berhasil ditambahkan');
     }
+
 
     
 

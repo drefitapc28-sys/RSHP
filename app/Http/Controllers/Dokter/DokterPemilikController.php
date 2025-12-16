@@ -18,7 +18,7 @@ class DokterPemilikController extends Controller
                 'user.nama as nama_pemilik',
                 'user.email'
             )
-            ->orderBy('pemilik.idpemilik', 'DESC')
+            ->orderBy('pemilik.idpemilik', 'ASC')
             ->get();
 
         return view('dokter.pemilik.index', compact('data'));

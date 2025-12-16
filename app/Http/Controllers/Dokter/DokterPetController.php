@@ -20,7 +20,7 @@ class DokterPetController extends Controller
                 'ras_hewan.nama_ras',
                 'jenis_hewan.nama_jenis_hewan'
             )
-            ->orderBy('pet.idpet', 'DESC')
+            ->orderBy('pet.idpet', 'ASC')
             ->get();
 
         return view('dokter.pet.index', compact('pets'));

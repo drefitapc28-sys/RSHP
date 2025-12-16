@@ -16,6 +16,18 @@ class DashboardDokterController extends Controller
         $jumlahRekamMedis = DB::table('rekam_medis')->count();
         $jumlahPemilik = DB::table('pemilik')->count();
         $jumlahPet = DB::table('pet')->count();
+        $jumlahtemu = DB::table('temu_dokter')
+            ->where('idrole_user', function ($query) use ($user) {
+                $query->select('role_user.idrole_user')
+                      ->from('role_user')
+                      ->where('role_user.iduser', $user->iduser)
+                      ->where('role_user.idrole', function ($subquery) {
+                          $subquery->select('role.idrole')
+                                   ->from('role')
+                                   ->where('role.nama_role', 'Dokter');
+                      });
+            })
+            ->count();
 
         return view('dokter.Dokter_Dashboard', compact(
             'userName',

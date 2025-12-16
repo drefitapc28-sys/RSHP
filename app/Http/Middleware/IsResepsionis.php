@@ -11,12 +11,15 @@ class IsResepsionis
     {
         $user = Auth::user();
 
-        // Ambil role aktif (status = 1)
-        $role = $user->roleUser()->where('status', 1)->first();
+        // Cek apakah user memiliki role "Resepsionis" yang aktif
+        $hasRole = $user->roleUser()
+            ->join('role', 'role_user.idrole', '=', 'role.idrole')
+            ->where('role_user.status', 1)
+            ->where('role.nama_role', 'Resepsionis')
+            ->exists();
 
-        // Cek apakah idrole-nya resepsionis (misalnya idrole = 4)
-        if (!$role || $role->idrole != 4) {
-            abort(403, 'Anda tidak memiliki akses ke halaman ini.');
+        if (!$hasRole) {
+            abort(403, 'Gagal! Akses ditolak. Anda bukan Resepsionis.');
         }
 
         return $next($request);

@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\{
     PetController,
     PemilikController,
     RoleController,
+    UserController,
     RoleUserController,
     DokterController,
     PerawatController
@@ -148,12 +149,22 @@ Route::middleware(['auth', 'isAdministrator'])->prefix('admin')->name('admin.')-
     });
 
     Route::controller(RoleUserController::class)->group(function () {
-        Route::get('/role-user', 'index')->name('role-user.index');
-        Route::get('/role-user/create', 'create')->name('role-user.create');
-        Route::post('/role-user/store', 'store')->name('role-user.store');
-        Route::get('/role-user/edit/{id}', 'edit')->name('role-user.edit');
-        Route::post('/role-user/update/{id}', 'update')->name('role-user.update');
-        Route::delete('/role-user/delete/{id}', 'destroy')->name('role-user.delete');
+        Route::get('/role_user', 'index')->name('role_user.index');
+        Route::get('/role_user/create', 'create')->name('role_user.create');
+        Route::post('/role_user/store', 'store')->name('role_user.store');
+        Route::get('/role_user/edit/{id}', 'edit')->name('role_user.edit');
+        Route::post('/role_user/update/{id}', 'update')->name('role_user.update');
+        Route::delete('/role_user/delete/{id}', 'destroy')->name('role_user.destroy');
+    });
+
+    Route::controller(UserController::class)->group(function () {
+        Route::get('/user', 'index')->name('user.index');
+        Route::get('/user/create', 'create')->name('user.create');
+        Route::post('/user/store', 'store')->name('user.store');
+        Route::get('/user/edit/{id}', 'edit')->name('user.edit');
+        Route::post('/user/update/{id}', 'update')->name('user.update');
+        Route::delete('/user/delete/{id}', 'destroy')->name('user.destroy');
+        Route::get('/user/reset-password/{id}', 'resetPassword')->name('user.resetPassword');
     });
 
         // dokter
@@ -222,10 +233,25 @@ Route::middleware(['auth', 'isPerawat'])->group(function () {
 Route::middleware(['auth', 'isResepsionis'])->group(function () {
     Route::get('/resepsionis/dashboard', [DashboardResepsionisController::class, 'index'])->name('resepsionis.dashboard');
     Route::get('/resepsionis/pet', [ResepsionisPetController::class, 'index'])->name('resepsionis.pet.index');
+    Route::get('/resepsionis/pet/create', [ResepsionisPetController::class, 'create'])->name('resepsionis.pet.create');
+    Route::post('/resepsionis/pet/store', [ResepsionisPetController::class, 'store'])->name('resepsionis.pet.store');
+    Route::get('/resepsionis/pet/edit/{id}', [ResepsionisPetController::class, 'edit'])->name('resepsionis.pet.edit');
+    Route::post('/resepsionis/pet/update/{id}', [ResepsionisPetController::class, 'update'])->name('resepsionis.pet.update');
+    Route::delete('/resepsionis/pet/delete/{id}', [ResepsionisPetController::class, 'destroy'])->name('resepsionis.pet.destroy');
     Route::get('/resepsionis/pemilik', [ResepsionisPemilikController::class, 'index'])->name('resepsionis.pemilik.index');
-    Route::get('/resepsionis/temu-dokter', [TemuDokterController::class, 'index'])->name('resepsionis.temu-dokter');
+    Route::get('/resepsionis/pemilik/create', [ResepsionisPemilikController::class, 'create'])->name('resepsionis.pemilik.create');
+    Route::post('/resepsionis/pemilik/store', [ResepsionisPemilikController::class, 'store'])->name('resepsionis.pemilik.store');
+    Route::get('/resepsionis/pemilik/edit/{id}', [ResepsionisPemilikController::class, 'edit'])->name('resepsionis.pemilik.edit');
+    Route::post('/resepsionis/pemilik/update/{id}', [ResepsionisPemilikController::class, 'update'])->name('resepsionis.pemilik.update');
+    Route::delete('/resepsionis/pemilik/delete/{id}', [ResepsionisPemilikController::class, 'destroy'])->name('resepsionis.pemilik.delete');
+    Route::get('/resepsionis/temu-dokter', [TemuDokterController::class, 'index'])->name('resepsionis.temu-dokter.index');
+    Route::get('/resepsionis/temu-dokter/create', [TemuDokterController::class, 'create'])->name('resepsionis.temu-dokter.create');
     Route::post('/resepsionis/temu-dokter', [TemuDokterController::class, 'store'])->name('resepsionis.temu-dokter.store');
+    Route::get('/resepsionis/temu-dokter/{id}/edit', [TemuDokterController::class, 'edit'])->name('resepsionis.temu-dokter.edit');
+    Route::put('/resepsionis/temu-dokter/{id}', [TemuDokterController::class, 'update'])->name('resepsionis.temu-dokter.update');
+    Route::delete('/resepsionis/temu-dokter/{id}', [TemuDokterController::class, 'destroy'])->name('resepsionis.temu-dokter.destroy');
 });
+
 
 /*
 |--------------------------------------------------------------------------

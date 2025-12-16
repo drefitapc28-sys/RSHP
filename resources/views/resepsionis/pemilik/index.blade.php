@@ -1,110 +1,107 @@
 @extends('layouts.lte.main')
 
-@section('title', 'Daftar Pemilik Hewan')
+@section('title', 'Data Pemilik | RSHP UNAIR')
 
 @section('content')
+<div class="app-content">
+    <div class="container-fluid">
 
-<style>
-.card {
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin: 20px;
-}
-.card-header {
-    background: #3f51b5;
-    color: white;
-    padding: 15px 20px;
-    border-radius: 8px 8px 0 0;
-}
-.card-header h3 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 500;
-}
-.card-body {
-    padding: 0;
-}
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-thead {
-    background: #f5f5f5;
-    border-bottom: 2px solid #e0e0e0;
-}
-th {
-    padding: 12px 15px;
-    text-align: left;
-    font-weight: 600;
-    color: #333;
-    font-size: 14px;
-}
-td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #e0e0e0;
-    font-size: 14px;
-    color: #555;
-}
-tbody tr:hover {
-    background: #f9f9f9;
-}
-.text-center {
-    text-align: center;
-    padding: 30px;
-    color: #999;
-}
-.btn-back {
-    background: #757575;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 4px;
-    text-decoration: none;
-    font-size: 14px;
-    display: inline-block;
-    margin: 15px 20px;
-}
-.btn-back:hover {
-    background: #616161;
-    color: white;
-}
-</style>
+        {{-- Breadcrumb --}}
+        <div class="row mb-3">
+            <div class="col-sm-6">
+                <h3 class="mb-0">Data Pemilik</h3>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="#">Master Data</a></li>
+                    <li class="breadcrumb-item active">Pemilik</li>
+                </ol>
+            </div>
+        </div>
 
-<div class="card">
-    <div class="card-header">
-        <h3>🐾 Daftar Pemilik Hewan</h3>
-    </div>
-
-    <div class="card-body">
-        @if(count($data) > 0)
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nama Pemilik</th>
-                        <th>Email</th>
-                        <th>No WA</th>
-                        <th>Alamat</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($data as $index => $p)
-                    <tr>
-                        <td>{{ $p->idpemilik }}</td>
-                        <td>{{ $p->nama_pemilik }}</td>
-                        <td>{{ $p->email }}</td>
-                        <td>{{ $p->no_wa }}</td>
-                        <td>{{ $p->alamat }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        @else
-            <p class="text-center">Belum ada data pemilik hewan.</p>
+        {{-- Alert Messages --}}
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Berhasil!</strong> {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         @endif
-        
-        <a href="{{ route('resepsionis.dashboard') }}" class="btn-back">⬅ Kembali</a>
+
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Gagal!</strong> {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        {{-- Card --}}
+        <div class="row">
+            <div class="col-12">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Tabel Data Pemilik</h3>
+                        <div class="card-tools">
+                            <a href="{{ route('resepsionis.pemilik.create') }}" 
+                               class="btn btn-primary btn-sm">
+                                + Tambah Pemilik
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th style="width: 80px">ID</th>
+                                    <th>Nama</th>
+                                    <th>Email</th>
+                                    <th>No. WhatsApp</th>
+                                    <th>Alamat</th>
+                                    <th style="width: 150px">Aksi</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @forelse ($pemilik as $p)
+                                <tr>
+                                    <td>{{ $p->idpemilik }}</td>
+                                    <td>{{ $p->nama }}</td>
+                                    <td>{{ $p->email }}</td>
+                                    <td>{{ $p->no_wa }}</td>
+                                    <td>{{ $p->alamat }}</td>
+
+                                    <td>
+                                        <a href="{{ route('resepsionis.pemilik.edit', $p->idpemilik) }}"
+                                           class="btn btn-sm btn-warning">
+                                            Edit
+                                        </a>
+
+                                        <form action="{{ route('resepsionis.pemilik.delete', $p->idpemilik) }}"
+                                              method="POST"
+                                              style="display:inline-block;">
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('Yakin hapus data ini?')">
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="6" class="text-center">Belum ada data pemilik</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-
 @endsection

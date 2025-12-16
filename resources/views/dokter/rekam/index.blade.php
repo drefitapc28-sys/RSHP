@@ -62,6 +62,43 @@ tbody tr:hover {
     background: #00acc1;
     color: white;
 }
+.btn-completed {
+    background: #4caf50;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 13px;
+    white-space: nowrap;
+}
+.btn-completed:hover {
+    background: #45a049;
+    color: white;
+}
+.btn-disabled {
+    background: #e0e0e0;
+    color: #999;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    white-space: nowrap;
+    cursor: not-allowed;
+}
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+.status-completed {
+    background: #d4edda;
+    color: #155724;
+}
 .text-center {
     text-align: center;
     padding: 30px;
@@ -84,6 +121,7 @@ tbody tr:hover {
                         <th>Nama Pemilik</th>
                         <th>Nama Hewan</th>
                         <th>Diagnosa</th>
+                        <th>Status</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -96,9 +134,22 @@ tbody tr:hover {
                         <td>{{ $r->nama_pet }}</td>
                         <td>{{ $r->diagnosa ?? '-' }}</td>
                         <td>
-                            <a href="{{ route('dokter.rekam.show', $r->idrekam_medis) }}" class="btn-detail">
-                                Detail & Tambah Terapi
-                            </a>
+                            @if($r->diagnosa && $r->diagnosa != '-')
+                                <span class="status-badge status-completed">✓ Selesai</span>
+                            @else
+                                <span class="status-badge status-pending">⏳ Belum Diisi</span>
+                            @endif
+                        </td>
+                        <td>
+                            @if($r->diagnosa && $r->diagnosa != '-')
+                                <a href="{{ route('dokter.rekam.show', $r->idrekam_medis) }}" class="btn-completed">
+                                    Lihat Detail
+                                </a>
+                            @else
+                                <a href="{{ route('dokter.rekam.show', $r->idrekam_medis) }}" class="btn-detail">
+                                    Input Rekam Medis
+                                </a>
+                            @endif
                         </td>
                     </tr>
                     @endforeach
