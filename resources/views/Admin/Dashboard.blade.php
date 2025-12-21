@@ -114,10 +114,12 @@
                 <p>Sistem ini digunakan untuk mengelola berbagai data transaksi pada Rumah Sakit Hewan Pendidikan Universitas Airlangga.</p>
 
                 <ul class="mb-0">
-                    <li>Manajemen Hewan</li>
-                    <li>Manajemen Pemilik</li>
-                    <li>Pengelolaan Kategori Hewan</li>
-                    <li>Pengelolaan Jenis Hewan</li>
+                 <li>Manajemen data master (jenis hewan, ras, kategori, dan tindakan)</li>
+                 <li>Pengelolaan data hewan dan pemilik hewan</li>
+                 <li>Pengaturan akun dan hak akses pengguna berdasarkan role</li>
+                 <li>Mendukung proses pelayanan medis dokter dan perawat</li>
+                 <li>Meningkatkan konsistensi, keamanan, dan akurasi data</li>
+                 <li>Mempermudah monitoring aktivitas administrasi</li>
                 </ul>
             </div>
         </div>
